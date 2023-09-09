@@ -1,0 +1,14 @@
+{
+	"editor.renderWhitespace": "all", // for showing whitespaces as dots
+	"editor.multiCursorModifier": "alt", // to be able to do multiple selections with Alt+LeftClick (lubuntu: switch it off in openbox config)
+	"editor.autoClosingBrackets": "never",
+	"editor.autoClosingQuotes": "never",
+	"editor.autoSurround": "never",
+	"editor.rulers": [100, 100.5],
+
+	"files.associations": {
+	},
+
+	"cortex-debug.gdbPath": "gdb-multiarch",
+	"cortex-debug.variableUseNaturalFormat": false,
+}

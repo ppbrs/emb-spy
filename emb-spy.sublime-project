@@ -1,0 +1,37 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+		},
+	],
+	"build_systems":
+	[
+		{
+			"name": "emb-spy",
+			"shell_cmd": "${file}",
+			"variants":
+			[
+				{
+					"name": "python3: Run this script locally.",
+					"shell_cmd": "python3 -u ${file}",
+					"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+				},
+				{
+					"name": "python3: Run this script in terminal.",
+					"shell_cmd": "gnome-terminal --full-screen -- bash -c \"python3 -u ${file} & disown; exec bash\"",
+				},
+				{
+					"name": "bash: Make this file executable",
+					"shell_cmd": "chmod +x ${file}",
+				},
+			],
+		},
+	],
+	"settings":
+	{
+		"tab_size": 4,
+		"auto_match_enabled": false,
+		"rulers": [ 100, 100.5, ],
+	},
+}
