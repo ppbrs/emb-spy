@@ -1,2 +1,6 @@
 # Sublime Text temporary files.
 *.sublime-workspace
+
+# Python temporary files.
+*.pyc
+dist/*

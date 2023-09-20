@@ -1,0 +1,33 @@
+# I followed this tutorial
+# https://packaging.python.org/en/latest/tutorials/packaging-projects/
+# for creating the package.
+
+[project]
+name = "emb_spy"
+description = "Debugging framework for embedded systems."
+readme = "README.md"
+dynamic = [
+	"version",
+]
+authors = [
+	{name="ppbrs", email="prishchepenko.boris@gmail.com"},
+]
+requires-python = ">=3.10"
+
+# For a complete list of classifiers, see https://pypi.org/classifiers/.
+classifiers = [
+	"Programming Language :: Python :: 3",
+	"License :: OSI Approved :: MIT License",
+	"Operating System :: OS Independent",
+]
+
+[build-system]
+requires = ["hatchling>=1.18.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "emb_spy/__about__.py"
+
+[project.urls]
+"Homepage" = "https://github.com/ppbrs/emb-spy"
+"Bug Tracker" = "https://github.com/ppbrs/emb-spy/issues"
