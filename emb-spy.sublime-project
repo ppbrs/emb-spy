@@ -25,6 +25,11 @@
 					"name": "bash: Make this file executable",
 					"shell_cmd": "chmod +x ${file}",
 				},
+				{
+					"name": "python3: Run pylama on all repo.",
+					"shell_cmd": "cd ${project_path} && pylama -o pylama.ini",
+					"file_regex": "(...*?):([0-9]*):.*",
+				},
 			],
 		},
 	],
