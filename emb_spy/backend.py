@@ -5,47 +5,90 @@ Provide interface for
 """
 # Standard library imports
 import ctypes
-import re
 import logging
 from telnetlib import Telnet
 # https://docs.python.org/3/library/telnetlib.html
 # Deprecated since version 3.11, will be removed in version 3.13
 # telnetlib3 is the recommended replacement:
 # https://telnetlib3.readthedocs.io/en/latest/intro.html
-
 # Third party imports
-
 # Local application/library imports
 
 
 class Backend:
-    """ An instance of this class will do the job.
+    """
+    An instance of this class will do the job.
     """
 
-    def __init__(self, host: str, port: int):
+    def __init__(self, host: str, port: int, target_name: str | None = None,
+                 logger_suffix: str | None = None):
+        """
+        :param host: OpenOCD host name, e.g. localhost.
+        :param port: OpenOCD port name, e.g. 4444.
+        :param target_name: Optional OpenOCD target name.
+        :param logger_suffix: Optional suffix for the logger name.
+        """
         self.host = host
         self.port = port
+        self.target_name = target_name
         self.tlnt: Telnet | None = None
-        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger = logging.getLogger(
+            self.__class__.__name__ + ("" if logger_suffix is None else logger_suffix))
 
     def __enter__(self):
-        self.logger.debug("telnet: opening on %s %s", self.host, self.port)
+        self.logger.info("Opening telnet on %s:%s.", self.host, self.port)
 
         self.tlnt = Telnet()
         self.tlnt.open(self.host, self.port)
 
         # Read "Open On-Chip Debugger" or any other invitation
-        self.tlnt.read_until(b">", timeout=2.0)
+        self.tlnt.read_until(">".encode("ascii"), timeout=2.0)
+        self.logger.debug("Telnet ok.")
 
-        self.logger.debug("telnet: ok")
+        target_names = self._request(cmd="target names")[0].split()
+        target_states = [self._request(cmd=f"{name} curstate")[0]for name in target_names]
+        self.logger.info("Targets: %s.",
+                         ", ".join([f"{name}({state})" for name, state
+                                    in zip(target_names, target_states)]))
+        if self.target_name is not None:
+            if self.target_name not in target_names:
+                self.logger.warning("Target name looks wrong.")
+            resp = self._request(cmd=f"targets {self.target_name}")
+            if resp:
+                self.logger.warning(resp)
+        target_current, target_state = self.get_current_target_state()
+        self.logger.info("Current target: %s(%s).", target_current, target_state)
+
         return self
 
     def __exit__(self, exc_type, exc_value, exc_tb):
         self.tlnt.close()
+        self.logger.debug("Telnet closed.")
         if exc_type is not None:
-            print(f"{exc_type=}")
-            print(f"{exc_value=}")
-            print(f"{exc_tb=}")
+            self.logger.error("%s: %s", exc_type.__name__, exc_value)
+
+    def _request(self, cmd: str) -> list[str]:
+        """
+        Send a command and wait for an answer.
+
+        A successful response consists of the following lines:
+        * The echo of the request.
+        * (optional) The response if it is supposed to be, e.g. when reading some memory.
+        * "\r>", which is the prompt for the following request.
+        If there are issues, the response can consist of several lines.
+        """
+        self.tlnt.write((cmd + "\n").encode("ascii"))
+        rdbytes = self.tlnt.read_until(b">", timeout=2.0)
+        response = rdbytes.decode("ascii").split("\r\n")
+        assert response[0].strip() == cmd
+        assert response[-1] == "\r>"
+        # self.logger.debug(str(response))
+        return response[1:-1]
+
+    def get_current_target_state(self) -> tuple[str, str]:
+        target_current = self._request(cmd="target current")[0]
+        target_state = self._request(cmd=f"{target_current} curstate")[0]
+        return target_current, target_state
 
     def read_register(self, addr: int | str) -> int | None:
         """
@@ -56,7 +99,7 @@ class Backend:
         if isinstance(addr, int):
             # Read a memory-mapped register. Example:
             #   > mdw 0xe000ed04 1
-            #   0xe000ed04: 0010000a 
+            #   0xe000ed04: 0010000a
             tncmd = (f"mdw {addr} 1\n").encode("ascii")
         elif isinstance(addr, str):
             # Read a special core register. Example:
@@ -68,7 +111,7 @@ class Backend:
         rdb: bytes = self.tlnt.read_until(b">", timeout=2.0)
 
         tnresp = rdb.decode("ascii").split("\r\n")[1]
-        # print(tnresp)
+        # self.logger.debug(tnresp)
         resp_parts = tnresp.split(":")
         assert len(resp_parts) == 2, f"Could not parse the response: `{resp_parts}`"
         val_s = resp_parts[1].strip()
@@ -87,7 +130,9 @@ class Backend:
         return val
 
     def read_memory(self, addr: int, ctype=ctypes.c_uint32) -> int:
-
+        """
+        Read a memory cell.
+        """
         if ctype in {ctypes.c_int8, ctypes.c_uint8}:
             tncmd = (f"mdb {addr} 1\n").encode("ascii")
         elif ctype in {ctypes.c_int16, ctypes.c_uint16}:
@@ -102,7 +147,7 @@ class Backend:
         rdb: bytes = self.tlnt.read_until(b">", timeout=2.0)
 
         tnresp = rdb.decode("ascii").split("\r\n")[1]
-        # print(tnresp)
+        # self.logger.debug(tnresp)
         resp_parts = tnresp.split(":")
         assert len(resp_parts) == 2, f"Could not parse the response: `{resp_parts}`"
         val_s = resp_parts[1].strip()
@@ -135,10 +180,11 @@ class Backend:
 
         self.tlnt.write(tncmd)
         _ = self.tlnt.read_until(b">", timeout=2.0).decode("ascii")
-        print(_)
 
     def write_memory(self, addr: int, val: int, ctype=ctypes.c_uint32) -> None:
-
+        """
+        Write a memory cell.
+        """
         if ctype in {ctypes.c_int8, ctypes.c_uint8}:
             tncmd = (f"mwb {addr} {val}\n").encode("ascii")
         elif ctype in {ctypes.c_int16, ctypes.c_uint16}:
@@ -151,13 +197,22 @@ class Backend:
             raise NotImplementedError(f"{ctype}")
         self.tlnt.write(tncmd)
         _ = self.tlnt.read_until(b">", timeout=2.0).decode("ascii")
-        print(_)
 
 
 if __name__ == "__main__":
     # Usage example:
+    logging.basicConfig(level=logging.DEBUG)
     HOST = "localhost"
     PORT = 4444
-    with Backend(host=HOST, port=PORT) as backend:
+    TARGET = None
+    # with Backend(host=HOST, port=PORT, target="master.cpu0") as backend:
+    with Backend(host=HOST, port=PORT, target_name=TARGET) as backend:
+        # raise ValueError("Testing.")
         pass
-        # raise Exception
+
+    print()
+    TARGET0 = None
+    TARGET1 = "master.cpu0"
+    with Backend(host=HOST, port=PORT, target_name=TARGET0, logger_suffix="0") as backend0, \
+            Backend(host=HOST, port=PORT, target_name=TARGET1, logger_suffix="1") as backend1:
+        pass
