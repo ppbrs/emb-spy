@@ -100,7 +100,7 @@ class Backend:
             # Read a memory-mapped register. Example:
             #   > mdw 0xe000ed04 1
             #   0xe000ed04: 0010000a
-            tncmd = (f"mdw {addr} 1\n").encode("ascii")
+            tncmd = (f"mdw 0x{addr:x} 1\n").encode("ascii")
         elif isinstance(addr, str):
             # Read a special core register. Example:
             #   > reg lr
@@ -110,6 +110,7 @@ class Backend:
         self.tlnt.write(tncmd)
         rdb: bytes = self.tlnt.read_until(b">", timeout=2.0)
 
+        self.logger.debug(rdb)
         tnresp = rdb.decode("ascii").split("\r\n")[1]
         # self.logger.debug(tnresp)
         resp_parts = tnresp.split(":")
@@ -134,24 +135,33 @@ class Backend:
         Read a memory cell.
         """
         if ctype in {ctypes.c_int8, ctypes.c_uint8}:
-            tncmd = (f"mdb {addr} 1\n").encode("ascii")
+            tncmd = (f"mdb 0x{addr:x} 1\n").encode("ascii")
+            response_size = 8  # Size (bits) of individual parts of a response string
         elif ctype in {ctypes.c_int16, ctypes.c_uint16}:
-            tncmd = (f"mdh {addr} 1\n").encode("ascii")
+            tncmd = (f"mdh 0x{addr:x} 1\n").encode("ascii")
+            response_size = 16
         elif ctype in {ctypes.c_int32, ctypes.c_uint32}:
-            tncmd = (f"mdw {addr} 1\n").encode("ascii")
+            tncmd = (f"mdw 0x{addr:x} 1\n").encode("ascii")
+            response_size = 32
         elif ctype in {ctypes.c_int64, ctypes.c_uint64}:
-            tncmd = (f"mdd {addr} 1\n").encode("ascii")
+            # tncmd = (f"mdd 0x{addr:x} 1\n").encode("ascii")
+            tncmd = (f"mdw 0x{addr:x} 2\n").encode("ascii")
+            response_size = 32
+            # Example of a response: "0x24000740: 008c39df 00000000"
         else:
             raise NotImplementedError(f"{ctype}")
         self.tlnt.write(tncmd)
         rdb: bytes = self.tlnt.read_until(b">", timeout=2.0)
 
+        self.logger.debug(rdb)
         tnresp = rdb.decode("ascii").split("\r\n")[1]
-        # self.logger.debug(tnresp)
+        self.logger.debug(tnresp)
         resp_parts = tnresp.split(":")
         assert len(resp_parts) == 2, f"Could not parse the response: `{resp_parts}`"
-        val_s = resp_parts[1].strip()
-        val = int(val_s, 16)
+        val_s = resp_parts[1].strip().split(" ")
+        val = 0
+        for i in range(len(val_s)):
+            val += int(val_s[i], 16) * 2**(i * response_size)
 
         if ctype == ctypes.c_int8:
             val = val - 2**8
@@ -159,6 +169,8 @@ class Backend:
             val = val - 2**16
         elif ctype == ctypes.c_int32:
             val = val - 2**32
+        elif ctype == ctypes.c_int64:
+            val = val - 2**64
 
         return val
 

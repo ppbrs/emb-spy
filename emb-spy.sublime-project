@@ -36,6 +36,10 @@
 					// "file_regex": "(...*?):([0-9]*):.*",
 					"file_regex": "(...*?):([0-9]*):([0-9]*)\\s(.*)",
 				},
+				{
+					"name": "Run pytest on all repo.",
+					"shell_cmd": "cd ${project_path} && pytest",
+				},
 			],
 		},
 	],
