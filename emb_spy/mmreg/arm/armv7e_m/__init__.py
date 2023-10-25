@@ -8,6 +8,7 @@ Registers of ARM V7E-M core and core peripherals.
 from emb_spy.mmreg.registers_if import Register, RegisterBits, Registers  # pylint: disable=import-error
 
 from ._nvic import _Nvic
+from ._debug import _Debug
 
 
 class MmregARMV7EM(Registers):
@@ -26,6 +27,7 @@ class MmregARMV7EM(Registers):
         self._init_scb()
         self._init_systick()
         self.regs += _Nvic().get_list()
+        self.regs += _Debug().get_list()
 
     def _init_core(self) -> None:
         self.regs.append(

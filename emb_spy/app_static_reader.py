@@ -16,7 +16,7 @@ from .backend import Backend
 from .mmreg.registers_if import Register, Registers
 
 
-class AppStatic:
+class AppStaticReader:
     """A class that contains methods of the application."""
 
     @dataclasses.dataclass
@@ -56,7 +56,7 @@ class AppStatic:
         @dataclasses.dataclass
         class RegisterData:
             register: Register
-            config: AppStatic.Config
+            config: AppStaticReader.Config
             val: int | None = None
 
         @dataclasses.dataclass
@@ -94,7 +94,7 @@ class AppStatic:
                                 st_value = symbol["st_value"]
                                 st_size = symbol["st_size"]
                                 ctype = self.config[sname].ctype
-                                self.logger.debug("Symbol `%s` found: 0x%x, %d, %d", sname, st_value, st_size, ctypes.sizeof(ctype))
+                                self.logger.debug("Symbol `%s` found: st_value=0x%x, st_size=%d, sizeof(ctype)=%d.", sname, st_value, st_size, ctypes.sizeof(ctype))
                                 assert ctypes.sizeof(ctype) == st_size, "Symbol size is wrong."
                                 symbols.append(SymbolData(name=sname, addr=st_value, ctype=ctype))
         if not symbols:

@@ -45,15 +45,15 @@ class Backend:
         self.tlnt.read_until(">".encode("ascii"), timeout=2.0)
         self.logger.debug("Telnet ok.")
 
-        target_names = self._request(cmd="target names")[0].split()
-        target_states = [self._request(cmd=f"{name} curstate")[0]for name in target_names]
+        target_names = self.request(cmd="target names")[0].split()
+        target_states = [self.request(cmd=f"{name} curstate")[0]for name in target_names]
         self.logger.info("Targets: %s.",
                          ", ".join([f"{name}({state})" for name, state
                                     in zip(target_names, target_states)]))
         if self.target_name is not None:
             if self.target_name not in target_names:
                 self.logger.warning("Target name looks wrong.")
-            resp = self._request(cmd=f"targets {self.target_name}")
+            resp = self.request(cmd=f"targets {self.target_name}")
             if resp:
                 self.logger.warning(resp)
         target_current, target_state = self.get_current_target_state()
@@ -67,9 +67,10 @@ class Backend:
         if exc_type is not None:
             self.logger.error("%s: %s", exc_type.__name__, exc_value)
 
-    def _request(self, cmd: str) -> list[str]:
+    def request(self, cmd: str) -> list[str]:
         """
-        Send a command and wait for an answer.
+        Send a command and wait for an answer; return the list of lines except the first,
+        which is the request echo, and the last, which is a prompt.
 
         A successful response consists of the following lines:
         * The echo of the request.
@@ -82,12 +83,12 @@ class Backend:
         response = rdbytes.decode("ascii").split("\r\n")
         assert response[0].strip() == cmd
         assert response[-1] == "\r>"
-        # self.logger.debug(str(response))
+        self.logger.debug(str(response))
         return response[1:-1]
 
     def get_current_target_state(self) -> tuple[str, str]:
-        target_current = self._request(cmd="target current")[0]
-        target_state = self._request(cmd=f"{target_current} curstate")[0]
+        target_current = self.request(cmd="target current")[0]
+        target_state = self.request(cmd=f"{target_current} curstate")[0]
         return target_current, target_state
 
     def read_register(self, addr: int | str) -> int | None:
@@ -163,13 +164,13 @@ class Backend:
         for i in range(len(val_s)):
             val += int(val_s[i], 16) * 2**(i * response_size)
 
-        if ctype == ctypes.c_int8:
+        if ctype == ctypes.c_int8 and val >= 0x80:
             val = val - 2**8
-        elif ctype == ctypes.c_int16:
+        elif ctype == ctypes.c_int16 and val >= 0x8000:
             val = val - 2**16
-        elif ctype == ctypes.c_int32:
+        elif ctype == ctypes.c_int32 and val >= 0x80000000:
             val = val - 2**32
-        elif ctype == ctypes.c_int64:
+        elif ctype == ctypes.c_int64 and val >= 0x8000000000000000:
             val = val - 2**64
 
         return val

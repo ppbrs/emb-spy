@@ -104,14 +104,14 @@ class MmregSTM32():
             Register(
                 name=f"{prefix}_AFRL", addr=(base + 0x20), descr="GPIO alternate function low register",
                 register_bits=[
-                    RegisterBits(bits=range(4 * pin, 4 * pin + 4), name=f"PUPDR{pin}", descr="", values=afr_values)
+                    RegisterBits(bits=range(4 * pin, 4 * pin + 4), name=f"AFRR{pin}", descr="", values=afr_values)
                     for pin in range(0, 8)
                 ]
             ),
             Register(
                 name=f"{prefix}_AFRH", addr=(base + 0x24), descr="GPIO alternate function high register",
                 register_bits=[
-                    RegisterBits(bits=range(4 * pin, 4 * pin + 4), name=f"PUPDR{pin + 8}", descr="", values=afr_values)
+                    RegisterBits(bits=range(4 * pin, 4 * pin + 4), name=f"AFR{pin + 8}", descr="", values=afr_values)
                     for pin in range(0, 8)
                 ]
             ),

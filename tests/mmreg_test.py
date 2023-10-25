@@ -50,6 +50,9 @@ def test_mmreg_stm32h743() -> None:
         "GPIOA_MODER",
         "TIM1_CNT", "TIM8_CNT",
         "TIM2_CNT", "TIM3_CNT", "TIM4_CNT", "TIM5_CNT",
+
+        # Debug system registers
+        "DHCSR", "DCRSR", "DCRDR", "DEMCR",
     ]
 
     soc = MmregSTM32H743()
