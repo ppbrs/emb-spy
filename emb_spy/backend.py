@@ -6,6 +6,7 @@ Provide interface for
 # Standard library imports
 import ctypes
 import logging
+import time
 from telnetlib import Telnet
 # https://docs.python.org/3/library/telnetlib.html
 # Deprecated since version 3.11, will be removed in version 3.13
@@ -20,8 +21,12 @@ class Backend:
     An instance of this class will do the job.
     """
 
-    def __init__(self, host: str, port: int, target_name: str | None = None,
-                 logger_suffix: str | None = None):
+    def __init__(
+        self, host: str, port: int,
+        target_name: str | None = None,
+        logger_suffix: str | None = None,
+        start_if_reset: bool = False
+    ):
         """
         :param host: OpenOCD host name, e.g. localhost.
         :param port: OpenOCD port name, e.g. 4444.
@@ -34,6 +39,7 @@ class Backend:
         self.tlnt: Telnet | None = None
         self.logger = logging.getLogger(
             self.__class__.__name__ + ("" if logger_suffix is None else logger_suffix))
+        self.start_if_reset = start_if_reset
 
     def __enter__(self):
         self.logger.info("Opening telnet on %s:%s.", self.host, self.port)
@@ -57,7 +63,11 @@ class Backend:
             if resp:
                 self.logger.warning(resp)
         target_current, target_state = self.get_current_target_state()
-        self.logger.info("Current target: %s(%s).", target_current, target_state)
+        (self.logger.warning if target_state == "reset" else self.logger.info)(
+            "Current target: %s(%s).", target_current, target_state)
+        if self.start_if_reset and target_state == "reset":
+            _ = self.request(cmd="reset run")
+            self.logger.warning("Restarted.")
 
         return self
 
@@ -67,7 +77,7 @@ class Backend:
         if exc_type is not None:
             self.logger.error("%s: %s", exc_type.__name__, exc_value)
 
-    def request(self, cmd: str) -> list[str]:
+    def request(self, cmd: str, timeout: float = 2.0) -> list[str]:
         """
         Send a command and wait for an answer; return the list of lines except the first,
         which is the request echo, and the last, which is a prompt.
@@ -78,16 +88,22 @@ class Backend:
         * "\r>", which is the prompt for the following request.
         If there are issues, the response can consist of several lines.
         """
+        t_write = time.monotonic()
         self.tlnt.write((cmd + "\n").encode("ascii"))
-        response_lines = self.tlnt.read_until(b">", timeout=2.0).decode("ascii").split("\r\n")
+        self.logger.debug("tx=%s", cmd)
+        response_lines = self.tlnt.read_until(b">", timeout=timeout).decode("ascii").split("\r\n")
+        self.logger.debug("rx=%s, Δt=%fs", response_lines, time.monotonic() - t_write)
         assert response_lines[0].strip() == cmd, f"Expected to receive the echo (`{cmd}`) but got `{response_lines[0].strip()}`"
         assert response_lines[-1] == "\r>", f"Expected to receive `\\r` but got `{response_lines[-1]}`"
-        self.logger.debug(str(response_lines))
         return response_lines[1:-1]
 
     def get_current_target_state(self) -> tuple[str, str]:
+        """
+        As of OpenOCD 0.11, target state can be debug-running, halted, reset, running, or unknown.
+        """
         target_current = self.request(cmd="target current")[0]
         target_state = self.request(cmd=f"{target_current} curstate")[0]
+        assert target_state in {"debug-running", "halted", "reset", "running", "unknown"}
         return target_current, target_state
 
     def read_register(self, addr: int | str) -> int | None:

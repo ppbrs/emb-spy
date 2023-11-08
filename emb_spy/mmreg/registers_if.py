@@ -96,26 +96,30 @@ class Register:
         """
 
         # print(f"Register({self.name}): get_str({value=})")
-        res = f"{self.name}: 0x{value:08X} ({value}, {bin(value)})"
-        if isinstance(self.addr, int):
-            res += f" @ [0x{self.addr:08X}]"
-        elif isinstance(self.addr, str):
-            res += f" @ [{self.addr}]"
-        elif self.addr is None:
-            res += " @ [None]"
-        else:
-            raise ValueError
+        value_bin = format(value, "#032b")
+        value_bin = value_bin[:-24] + "_" + value_bin[-24:-16] + "_" + value_bin[-16:-8] + "_" + value_bin[-8:]
+        res = f"{self.name} = 0x{value:08X} = {value_bin} = {value}u"
         if self.descr is not None and descr:
-            res += f"\n\t{self.descr}"
+            res += f" = {self.descr}"
+            if isinstance(self.addr, int):
+                res += f" @[0x{self.addr:08X}]."
+            elif isinstance(self.addr, str):
+                res += f" @[{self.addr}]."
+            elif self.addr is None:
+                res += " @[None]."
+            else:
+                raise ValueError
+        else:
+            res += "."
         if self.comment is not None and comment:
             res += f"\n\t{self.comment}"
         if bits:
             for register_bit in self.register_bits:
                 name = register_bit.name
                 bits_val = register_bit.get_value(reg_value=value)
-                res += f"\n\t{name}: 0x{bits_val:X} ({bits_val}, {bin(bits_val)}) @ {register_bit.bits_list}"
+                res += f"\n\t{name} = 0x{bits_val:X} = {bin(bits_val)} = {bits_val}u."
                 if register_bit.descr is not None and bits_descr:
-                    res += f"\n\t\t{register_bit.descr}"
+                    res += f" {register_bit.descr}, @{register_bit.bits_list}."
                 if bits_val_descr:
                     if bits_val in register_bit.values:
                         res += f"\n\t\t{bits_val} = {register_bit.values[bits_val]}"

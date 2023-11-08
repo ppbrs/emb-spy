@@ -21,10 +21,10 @@ class AppStaticReader:
 
     @dataclasses.dataclass
     class Config:
-        descr: bool = False
+        descr: bool = True
         comment: bool = False
         bits: bool = True
-        bits_descr: bool = False
+        bits_descr: bool = True
         bits_val_descr: bool = False
         ctype: int = ctypes.c_uint32  # todo
 
@@ -34,7 +34,8 @@ class AppStaticReader:
                  target_name: str | None = None,
                  logger_suffix: str | None = None,
                  registers: Registers | None = None,
-                 elf_path: pathlib.PosixPath | None = None
+                 elf_path: pathlib.PosixPath | None = None,
+                 start_if_reset: bool = False
                  ):
         """
         :param logger_suffix: Optional suffix for the logger name.
@@ -48,6 +49,7 @@ class AppStaticReader:
         self.logger_suffix = logger_suffix
         self.registers = registers
         self.elf_path = elf_path
+        self.start_if_reset = start_if_reset
 
     def __call__(self) -> list:
 
@@ -100,8 +102,9 @@ class AppStaticReader:
         if not symbols:
             self.logger.info("There are no symbols to read.")
 
-        with Backend(host=self.host, port=self.port, target_name=self.target_name,
-                     logger_suffix=self.logger_suffix) as backend:
+        with Backend(
+                host=self.host, port=self.port, target_name=self.target_name,
+                logger_suffix=self.logger_suffix, start_if_reset=self.start_if_reset) as backend:
             for reg_data in regs_data:
                 reg_data.val = backend.read_register(addr=reg_data.register.addr)
             for s_data in symbols:
