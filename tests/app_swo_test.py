@@ -1,7 +1,7 @@
 
 import logging
 
-from emb_spy.app_swo import AppSwoParser
+from emb_spy.app_swo import _AppSwoParser, AppSwo
 
 
 _logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ def test_app_swo_parsing() -> None:
         assert isinstance(in_bytes, bytes)
         assert isinstance(out_expect, dict)
 
-        parser = AppSwoParser()
+        parser = _AppSwoParser(tsformat=AppSwo.TimestampFormat.ABSOLUTE)
         parser.process_bytes(in_bytes)
         out_parsed = parser.data
         assert {*out_expect.keys()} == {*out_parsed.keys()}

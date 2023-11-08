@@ -42,7 +42,7 @@ class Backend:
         self.tlnt.open(self.host, self.port)
 
         # Read "Open On-Chip Debugger" or any other invitation
-        self.tlnt.read_until(">".encode("ascii"), timeout=2.0)
+        _ = self.tlnt.read_until(b">", timeout=2.0)
         self.logger.debug("Telnet ok.")
 
         target_names = self.request(cmd="target names")[0].split()
@@ -79,12 +79,11 @@ class Backend:
         If there are issues, the response can consist of several lines.
         """
         self.tlnt.write((cmd + "\n").encode("ascii"))
-        rdbytes = self.tlnt.read_until(b">", timeout=2.0)
-        response = rdbytes.decode("ascii").split("\r\n")
-        assert response[0].strip() == cmd
-        assert response[-1] == "\r>"
-        self.logger.debug(str(response))
-        return response[1:-1]
+        response_lines = self.tlnt.read_until(b">", timeout=2.0).decode("ascii").split("\r\n")
+        assert response_lines[0].strip() == cmd, f"Expected to receive the echo (`{cmd}`) but got `{response_lines[0].strip()}`"
+        assert response_lines[-1] == "\r>", f"Expected to receive `\\r` but got `{response_lines[-1]}`"
+        self.logger.debug(str(response_lines))
+        return response_lines[1:-1]
 
     def get_current_target_state(self) -> tuple[str, str]:
         target_current = self.request(cmd="target current")[0]

@@ -7,3 +7,6 @@ dist/*
 
 # Temporary files from elftools
 *.symbols
+
+# Temporary and logging files
+*.log
