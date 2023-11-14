@@ -6,13 +6,14 @@ Provide interface for
 # Standard library imports
 import ctypes
 import logging
-import time
 from telnetlib import Telnet
+import time
 # https://docs.python.org/3/library/telnetlib.html
 # Deprecated since version 3.11, will be removed in version 3.13
 # telnetlib3 is the recommended replacement:
 # https://telnetlib3.readthedocs.io/en/latest/intro.html
 # Third party imports
+import psutil
 # Local application/library imports
 
 
@@ -22,24 +23,37 @@ class Backend:
     """
 
     def __init__(
-        self, host: str, port: int,
+        self,
+        host: str = "localhost",
+        port: int | None = None,
         target_name: str | None = None,
         logger_suffix: str | None = None,
         start_if_reset: bool = False
     ):
         """
-        :param host: OpenOCD host name, e.g. localhost.
-        :param port: OpenOCD port name, e.g. 4444.
+        :param host: Optional OpenOCD host name, e.g. localhost.
+        :param port: Optional OpenOCD port number, e.g. 4444. Use None if the port number
+        is unknown and should be detected.
         :param target_name: Optional OpenOCD target name.
         :param logger_suffix: Optional suffix for the logger name.
         """
-        self.host = host
-        self.port = port
-        self.target_name = target_name
-        self.tlnt: Telnet | None = None
         self.logger = logging.getLogger(
             self.__class__.__name__ + ("" if logger_suffix is None else logger_suffix))
+        self.host = host
+        self.port = port if port is not None else self._find_port()
+        self.target_name = target_name
+        self.tlnt: Telnet | None = None
         self.start_if_reset = start_if_reset
+
+    @staticmethod
+    def _find_port() -> int:
+        for proc in psutil.process_iter(["cmdline"]):
+            cmd_line = proc.info["cmdline"]
+            if len(cmd_line) > 1 and cmd_line[0] == "openocd":
+                for param in cmd_line[1:]:
+                    if param.startswith("telnet_port"):
+                        return int(param[12:])
+        raise ValueError("openocd process is not running")
 
     def __enter__(self):
         self.logger.info("Opening telnet on %s:%s.", self.host, self.port)

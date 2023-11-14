@@ -30,7 +30,8 @@ class AppStaticReader:
 
     def __init__(self,
                  config: dict[str, Config],
-                 host: str, port: int,
+                 host: str = "localhost",
+                 port: int | None = None,
                  target_name: str | None = None,
                  logger_suffix: str | None = None,
                  registers: Registers | None = None,
