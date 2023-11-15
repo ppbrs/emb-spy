@@ -47,9 +47,20 @@ class Backend:
 
     @staticmethod
     def _find_port() -> int:
+        """
+        Examples of commnd line for an OpenOCD process:
+
+        openocd -c \
+            "gdb_port 50000" \
+            -c "tcl_port 50001" \
+            -c "telnet_port 50002" \
+            -s ~/projects/fw7.wt1 \
+            -f ~/.vscode/extensions/marus25.cortex-debug-1.12.1/support/openocd-helpers.tcl \
+            -f serpens/openocd.cfg
+        """
         for proc in psutil.process_iter(["cmdline"]):
             cmd_line = proc.info["cmdline"]
-            if len(cmd_line) > 1 and cmd_line[0] == "openocd":
+            if len(cmd_line) > 1 and "openocd" in cmd_line[0]:
                 for param in cmd_line[1:]:
                     if param.startswith("telnet_port"):
                         return int(param[12:])

@@ -1,5 +1,6 @@
 
 from .app_static_reader import AppStaticReader
+from .app_dynamic_reader import AppDynamicReader
 from .app_swo import AppSwo
 from .backend import Backend
 from .mmreg.arm.armv6_m.stm32f0.stm32f051 import MmregSTM32F051
