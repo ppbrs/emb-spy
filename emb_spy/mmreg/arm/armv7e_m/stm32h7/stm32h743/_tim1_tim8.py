@@ -118,18 +118,18 @@ class _Tim1Tim8(Registers):
                     ]
                 ),
                 Register(
-                    name=(pref + "CCMR1-input-capture"), addr=(base + 0x18), descr="TIMx capture/compare mode register 1",
+                    name=(pref + "CCMR1_IN"), addr=(base + 0x18), descr="TIMx capture/compare mode register 1",
                     register_bits=[
                     ]
                 ),
                 Register(
-                    name=(pref + "CCMR1-output-compare"), addr=(base + 0x18), descr="TIMx capture/compare mode register 1",
+                    name=(pref + "CCMR1_OUT"), addr=(base + 0x18), descr="TIMx capture/compare mode register 1",
                     register_bits=[
                         RegisterBits(bits=15, name="OC2CE", descr="Output Compare 2 clear enable"),
                         RegisterBits(bits=[12, 13, 14, 24], name="OC2M", descr="Output Compare 2 mode", values={
                             0b0000: "Frozen",
-                            0b0001: "Set channel 1 to active level on match.",
-                            0b0010: "Set channel 1 to inactive level on match.",
+                            0b0001: "Set channel to active level on match.",
+                            0b0010: "Set channel to inactive level on match.",
                             0b0011: "Toggle",
                             0b0100: "Force inactive level",
                             0b0101: "Force active level",
@@ -150,11 +150,12 @@ class _Tim1Tim8(Registers):
                             0b01: "CC1 channel is configured as input, IC2 is mapped on TI2",
                             0b10: "CC1 channel is configured as input, IC2 is mapped on TI1",
                             0b11: "CC1 channel is configured as input, IC2 is mapped on TRC.", }),
+
                         RegisterBits(bits=7, name="OC1CE", descr="Output Compare 1 clear enable"),
                         RegisterBits(bits=[4, 5, 6, 16], name="OC1M", descr="Output Compare 1 mode", values={
                             0b0000: "Frozen",
-                            0b0001: "Set channel 1 to active level on match.",
-                            0b0010: "Set channel 1 to inactive level on match.",
+                            0b0001: "Set channel to active level on match.",
+                            0b0010: "Set channel to inactive level on match.",
                             0b0011: "Toggle",
                             0b0100: "Force inactive level",
                             0b0101: "Force active level",
@@ -178,13 +179,64 @@ class _Tim1Tim8(Registers):
                     ]
                 ),
                 Register(
-                    name=(pref + "CCMR2-input-capture"), addr=(base + 0x1C), descr="TIMx capture/compare mode register 2",
+                    name=(pref + "CCMR2_IN"), addr=(base + 0x1C), descr="TIMx capture/compare mode register 2",
                     register_bits=[
                     ]
                 ),
                 Register(
-                    name=(pref + "CCMR2-output-compare"), addr=(base + 0x1C), descr="TIMx capture/compare mode register 2",
+                    name=(pref + "CCMR2_OUT"), addr=(base + 0x1C), descr="TIMx capture/compare mode register 2",
                     register_bits=[
+                        RegisterBits(bits=15, name="OC4CE", descr="Output Compare 4 clear enable"),
+                        RegisterBits(bits=[12, 13, 14, 24], name="OC4M", descr="Output Compare 4 mode", values={
+                            0b0000: "Frozen",
+                            0b0001: "Set channel to active level on match.",
+                            0b0010: "Set channel to inactive level on match.",
+                            0b0011: "Toggle",
+                            0b0100: "Force inactive level",
+                            0b0101: "Force active level",
+                            0b0110: "PWM mode 1",
+                            0b0111: "PWM mode 2",
+                            0b1000: "Retriggerable OPM mode 1",
+                            0b1001: "Retriggerable OPM mode 2",
+                            0b1100: "Combined PWM mode 1",
+                            0b1101: "Combined PWM mode 2",
+                            0b1110: "Asymmetric PWM mode 1",
+                            0b1111: "Asymmetric PWM mode 2", }),
+                        RegisterBits(bits=11, name="OC4PE", descr="Output Compare 4 preload enable", values={
+                            0: "Preload register on TIMx_CCR4 disabled.",
+                            1: "Preload register on TIMx_CCR4 enabled.", }),
+                        RegisterBits(bits=10, name="OC4FE", descr="Output Compare 4 fast enable"),
+                        RegisterBits(bits=[8, 9], name="CC4S", descr="Capture/Compare 4 selection", values={
+                            0b00: "CC4 channel is configured as output",
+                            0b01: "CC4 channel is configured as input, IC2 is mapped on TI2",
+                            0b10: "CC4 channel is configured as input, IC2 is mapped on TI1",
+                            0b11: "CC4 channel is configured as input, IC2 is mapped on TRC.", }),
+
+                        RegisterBits(bits=7, name="OC3CE", descr="Output Compare 3 clear enable"),
+                        RegisterBits(bits=[4, 5, 6, 16], name="OC3M", descr="Output Compare 3 mode", values={
+                            0b0000: "Frozen",
+                            0b0001: "Set channel to active level on match.",
+                            0b0010: "Set channel to inactive level on match.",
+                            0b0011: "Toggle",
+                            0b0100: "Force inactive level",
+                            0b0101: "Force active level",
+                            0b0110: "PWM mode 1",
+                            0b0111: "PWM mode 2",
+                            0b1000: "Retriggerable OPM mode 1",
+                            0b1001: "Retriggerable OPM mode 2",
+                            0b1100: "Combined PWM mode 1",
+                            0b1101: "Combined PWM mode 2",
+                            0b1110: "Asymmetric PWM mode 1",
+                            0b1111: "Asymmetric PWM mode 2", }),
+                        RegisterBits(bits=3, name="OC3PE", descr="Output Compare 3 preload enable", values={
+                            0: "Preload register on TIMx_CCR3 disabled.",
+                            1: "Preload register on TIMx_CCR3 enabled.", }),
+                        RegisterBits(bits=2, name="OC3FE", descr="Output Compare 3 fast enable"),
+                        RegisterBits(bits=[0, 1], name="CC3S", descr="Capture/Compare 3 selection", values={
+                            0b00: "CC3 channel is configured as output",
+                            0b01: "CC3 channel is configured as input, IC1 is mapped on TI1",
+                            0b10: "CC3 channel is configured as input, IC1 is mapped on TI2",
+                            0b11: "CC3 channel is configured as input, IC1 is mapped on TRC.", }),
                     ]
                 ),
                 Register(

@@ -116,8 +116,10 @@ class Register:
         if bits:
             for register_bit in self.register_bits:
                 name = register_bit.name
-                bits_val = register_bit.get_value(reg_value=value)
-                res += f"\n\t{name} = 0x{bits_val:X} = {bin(bits_val)} = {bits_val}u."
+                bits_val: int = register_bit.get_value(reg_value=value)
+                bits_val_bin: str = format(bits_val, f"#0{2 + len(register_bit.bits_list)}b")
+
+                res += f"\n\t{name} = 0x{bits_val:X} = {bits_val_bin} = {bits_val}u."
                 if register_bit.descr is not None and bits_descr:
                     res += f" {register_bit.descr}, @{register_bit.bits_list}."
                 if bits_val_descr:
