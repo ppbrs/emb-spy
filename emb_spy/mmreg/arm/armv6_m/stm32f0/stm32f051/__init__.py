@@ -6,7 +6,7 @@
 
 from emb_spy.mmreg.registers_if import Register, Registers, RegisterBits  # pylint: disable=import-error
 from emb_spy.mmreg.arm.armv6_m.mmreg_armv6_m import MmregARMV6M  # pylint: disable=import-error
-from emb_spy.mmreg.arm.stm32.mmreg_stm32 import MmregSTM32  # pylint: disable=import-error
+from emb_spy.mmreg.arm.stm32 import MmregSTM32  # pylint: disable=import-error
 
 
 class MmregSTM32F051(Registers):
@@ -71,6 +71,7 @@ class MmregSTM32F051(Registers):
 
         self._init_gpio()
         self._init_rcc()
+        self.regs += MmregSTM32.init_tim1_tim8(prefix="TIM1", base=self.TIM1_BASE)
         self._init_tim2_tim3(prefix="TIM2", base=self.TIM2_BASE)
         self._init_tim2_tim3(prefix="TIM3", base=self.TIM3_BASE)
 

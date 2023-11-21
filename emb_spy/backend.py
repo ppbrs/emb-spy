@@ -40,13 +40,13 @@ class Backend:
         self.logger = logging.getLogger(
             self.__class__.__name__ + ("" if logger_suffix is None else logger_suffix))
         self.host = host
-        self.port = port if port is not None else self._find_port()
+        self.port = port if port is not None else self.find_openocd_port()
         self.target_name = target_name
         self.tlnt: Telnet | None = None
         self.start_if_reset = start_if_reset
 
     @staticmethod
-    def _find_port() -> int:
+    def find_openocd_port() -> int:
         """
         Examples of commnd line for an OpenOCD process:
 

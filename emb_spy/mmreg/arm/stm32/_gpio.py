@@ -1,9 +1,7 @@
+from emb_spy.mmreg.registers_if import Register, Registers, RegisterBits  # pylint: disable=import-error
 
-from emb_spy.mmreg.registers_if import Register, RegisterBits  # pylint: disable=import-error
 
-
-class MmregSTM32():
-    """ """
+class _Gpio(Registers):
 
     @classmethod
     def init_gpio(cls, prefix: str, base: int) -> list[Register]:
@@ -117,3 +115,4 @@ class MmregSTM32():
             ),
         ]
         return regs
+

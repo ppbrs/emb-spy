@@ -67,13 +67,25 @@ class _AppReader:
         self.syms_data: list[self._SymbolData] = []
         self._prepare_symbols_data()
 
+        if not self.regs_data and not self.syms_data:
+            raise ValueError("There is nothing to read.")
+
     def _prepare_registers_data(self):
         if self.registers is not None:
-            for name, register in self.registers.get_dict_name().items():
-                if name in self.config.keys():
-                    self.regs_data.append(self._RegisterData(register=register, config=self.config[name], val=None))
+            for name_config in self.config.keys():
+                assert len(name_config.split(".")) <= 2
+                reg_name_config = name_config.split(".")[0]
+                for name, register in self.registers.get_dict_name().items():
+                    if reg_name_config == name:
+                        self.regs_data.append(self._RegisterData(register=register, config=self.Config(), val=None))
+        # if self.registers is not None:
+        #     for name, register in self.registers.get_dict_name().items():
+        #         if name in self.config.keys():
+        #             self.regs_data.append(self._RegisterData(register=register, config=self.config[name], val=None))
         if not self.regs_data:
             self.logger.info("There are no registers to read.")
+        else:
+            self.logger.info(f"{len(self.regs_data)} registers will be read.")
 
     def _prepare_symbols_data(self):
         if self.elf_path is not None:
@@ -100,3 +112,5 @@ class _AppReader:
                                 self.syms_data.append(self._SymbolData(name=sname, addr=st_value, ctype=ctype))
         if not self.syms_data:
             self.logger.info("There are no symbols to read.")
+        else:
+            self.logger.info(f"{len(self.syms_data)} symbols will be read.")

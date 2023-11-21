@@ -5,15 +5,15 @@
 
 from emb_spy.mmreg.registers_if import Register, Registers, RegisterBits  # pylint: disable=import-error
 from emb_spy.mmreg.arm.armv7e_m import MmregARMV7EM  # pylint: disable=import-error
-from emb_spy.mmreg.arm.stm32.mmreg_stm32 import MmregSTM32  # pylint: disable=import-error
+from emb_spy.mmreg.arm.stm32 import MmregSTM32  # pylint: disable=import-error
 
 from ._pwr import _Pwr
-from ._tim1_tim8 import _Tim1Tim8
 from ._tim2_tim3_tim4_tim5 import _Tim2Tim3Tim4Tim5
 
 
 class MmregSTM32H743(Registers):
-    """ Generates Register objects for all peripherals of STM32H743.
+    """
+    Generates Register objects for all peripherals of STM32H743.
     """
     ADC12_BASE = 0x40022000
     ADC3_BASE = 0x58026000
@@ -37,10 +37,8 @@ class MmregSTM32H743(Registers):
     I2C3_BASE = 0x40005C00
     I2C4_BASE = 0x58001C00
     RCC_BASE = 0x58024400
-
-    # def get_list(self) -> list[Register]:
-    #     """ Return the list of all Register objects. """
-    #     return self.regs
+    TIM1_BASE = 0x40010000
+    TIM8_BASE = 0x40010400
 
     def __init__(self):
         self.regs = []
@@ -51,7 +49,8 @@ class MmregSTM32H743(Registers):
         self._init_flash()
         self._init_gpio()
         self._init_i2c()
-        self.regs += _Tim1Tim8().get_list()
+        self.regs += MmregSTM32.init_tim1_tim8(prefix="TIM1", base=self.TIM1_BASE)
+        self.regs += MmregSTM32.init_tim1_tim8(prefix="TIM8", base=self.TIM8_BASE)
         self.regs += _Pwr().get_list()
         self.regs += _Tim2Tim3Tim4Tim5().get_list()
         self._init_rcc()

@@ -129,6 +129,9 @@ class Register:
 
 
 class Registers(abc.ABC):
+    """
+    This is the base class for all SOCs.
+    """
 
     __slots__ = ("regs")
     regs: list[Register]

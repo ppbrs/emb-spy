@@ -108,16 +108,19 @@ class AppSwo:
         """Local date and time."""
 
     # pylint: disable-next=too-many-arguments
-    def __init__(self, host: str, port: int,
+    def __init__(self,
                  traceclkin_freq: int,
                  trace_freq: int,
                  logger_suffix: str = "",
                  out_path_base: pathlib.Path = pathlib.Path.cwd() / "app_swo_output_default",
-                 tsformat: AppSwo.TimestampFormat = TimestampFormat.RELATIVE) -> None:
+                 tsformat: AppSwo.TimestampFormat = TimestampFormat.RELATIVE,
+                 host: str = "localhost",
+                 port: int | None = None
+                 ) -> None:
         self.logger_suffix = logger_suffix if logger_suffix is not None else ""
         self.logger = logging.getLogger(self.__class__.__name__ + self.logger_suffix)
+        self.port = Backend.find_openocd_port() if port is None else port
         self.host = host
-        self.port = port
         self.parser = _AppSwoParser(out_path_base=out_path_base, tsformat=tsformat)
         self.traceclkin_freq = traceclkin_freq
         self.trace_freq = trace_freq
