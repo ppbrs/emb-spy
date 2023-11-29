@@ -29,15 +29,15 @@ class AppStaticReader(_AppReader):
         res = {}
         print()
         for reg_data in self.regs_data:
-            reg_str = reg_data.register.get_str(
-                value=reg_data.val,
-                descr=reg_data.config.descr,
-                comment=reg_data.config.comment,
-                bits=reg_data.config.bits,
-                bits_descr=reg_data.config.bits_descr,
-                bits_val_descr=reg_data.config.bits_val_descr,
-            )
-            print(reg_str, "\n")
+            if reg_data.sub_register is None:
+                reg_str = reg_data.register.get_str(
+                    value=reg_data.val,
+                    verbose=reg_data.verbose
+                )
+                print(f"{reg_str}\n")
+            else:
+                sub_reg_str = reg_data.sub_register.get_str(reg_value=reg_data.val, verbose=reg_data.verbose)
+                print(f"{reg_data.register.name}.{sub_reg_str}\n")
 
         print()
         for s_data in self.syms_data:

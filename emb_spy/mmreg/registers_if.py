@@ -64,6 +64,19 @@ class RegisterBits:
                 mask |= (1 << bit_pos)
         return (reg_value & self.get_mask(invert=True)) | mask
 
+    def get_str(self, reg_value: int, verbose: bool) -> str:
+
+        bits_val: int = self.get_value(reg_value=reg_value)
+        bits_val_bin: str = format(bits_val, f"#0{2 + len(self.bits_list)}b")
+        res = f"{self.name} = 0x{bits_val:X} = {bits_val_bin} = {bits_val}u."
+        if self.descr is not None and verbose:
+            bits_list_str = f"@{self.bits_list}".replace(" ", "")
+            res += f" {self.descr}, {bits_list_str}."
+            if verbose:
+                if bits_val in self.values:
+                    res += f"\n\t\t{bits_val} = {self.values[bits_val]}"
+        return res
+
 
 @dataclass
 class Register:
@@ -88,9 +101,7 @@ class Register:
         self.comment = comment
         self.register_bits = register_bits
 
-    def get_str(self, value: int,
-                descr: bool = False, comment: bool = False,
-                bits: bool = True, bits_descr: bool = False, bits_val_descr: bool = False) -> str:
+    def get_str(self, value: int, verbose: bool = False) -> str:
         """
         Prepare a human-readable string with register description and values.
         """
@@ -99,7 +110,7 @@ class Register:
         value_bin = format(value, "#032b")
         value_bin = value_bin[:-24] + "_" + value_bin[-24:-16] + "_" + value_bin[-16:-8] + "_" + value_bin[-8:]
         res = f"{self.name} = 0x{value:08X} = {value_bin} = {value}u"
-        if self.descr is not None and descr:
+        if self.descr is not None and verbose:
             res += f" = {self.descr}"
             if isinstance(self.addr, int):
                 res += f" @[0x{self.addr:08X}]."
@@ -111,20 +122,11 @@ class Register:
                 raise ValueError
         else:
             res += "."
-        if self.comment is not None and comment:
+        if self.comment is not None and verbose:
             res += f"\n\t{self.comment}"
-        if bits:
-            for register_bit in self.register_bits:
-                name = register_bit.name
-                bits_val: int = register_bit.get_value(reg_value=value)
-                bits_val_bin: str = format(bits_val, f"#0{2 + len(register_bit.bits_list)}b")
-
-                res += f"\n\t{name} = 0x{bits_val:X} = {bits_val_bin} = {bits_val}u."
-                if register_bit.descr is not None and bits_descr:
-                    res += f" {register_bit.descr}, @{register_bit.bits_list}."
-                if bits_val_descr:
-                    if bits_val in register_bit.values:
-                        res += f"\n\t\t{bits_val} = {register_bit.values[bits_val]}"
+        for register_bit in self.register_bits:
+            res += "\n\t"
+            res += register_bit.get_str(reg_value=value, verbose=verbose)
         return res
 
 
