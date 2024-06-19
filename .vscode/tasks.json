@@ -8,5 +8,14 @@
 			"command": "cd ${fileDirname} && python3 -u ${file}",
 			"group": "build",
 		},
+		{
+			"label": "Run STM32F051 Analyzer.",
+			"type": "shell",
+			"command": "clear && python3 __init__.py",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/emb_spy/analyzer/analyzer_stm32f051"
+			},
+		},
 	]
 }

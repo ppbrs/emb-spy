@@ -12,6 +12,7 @@
 			"shell_cmd": "${file}",
 			"variants":
 			[
+				// ---------------------------------------------------------------------------------
 				{
 					"name": "python3: Run this script locally.",
 					"shell_cmd": "python3 -u ${file}",
@@ -26,10 +27,66 @@
 					"shell_cmd": "chmod +x ${file}",
 				},
 				{
+					"name": "Run STM32H743 Analyzer.",
+					"working_dir": "${project_path}/templates",
+					"shell_cmd": "python3 stm32h743_analyzer.py",
+					"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+				},
+				{
+					"name": "Run STM32F745 Analyzer.",
+					"working_dir": "${project_path}/emb_spy/analyzer/analyzer_stm32f745",
+					"shell_cmd": "python3 __init__.py",
+					"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+				},
+				{
+					"name": "Run STM32F051 Analyzer.",
+					"working_dir": "${project_path}/emb_spy/analyzer/analyzer_stm32f051",
+					"shell_cmd": "python3 __init__.py",
+					"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+				},
+				// ---------------------------------------------------------------------------------
+				// Test
+				// ---------------------------------------------------------------------------------
+				{
+					"name": "Run pytest on all repo.",
+					"working_dir": "${project_path}",
+					"shell_cmd": "pytest",
+				},
+				// ---------------------------------------------------------------------------------
+				// Lint
+				// ---------------------------------------------------------------------------------
+				{
 					"name": "python3: Run pylama on all repo.",
-					"shell_cmd": "cd ${project_path} && pylama -o pylama.ini",
+					"working_dir": "${project_path}",
+					"shell_cmd": "pylama -o pylama.ini",
 					"file_regex": "(...*?):([0-9]*):.*",
 				},
+				{
+					"name": "python3: Run pylama on this module.",
+					"working_dir": "${project_path}",
+					"shell_cmd": "pylama -o pylama.ini ${file}",
+					"file_regex": "(...*?):([0-9]*):.*",
+				},
+				{
+					"name": "python3: Run pylama on this directory.",
+					"working_dir": "${project_path}",
+					"shell_cmd": "pylama -o pylama.ini ${file_path}",
+					"file_regex": "(...*?):([0-9]*):.*",
+				},
+				{
+					"name": "python3: Run ISORT on this module.",
+					"working_dir": "${project_path}",
+					"shell_cmd": "isort ${file}",
+				},
+				// ---------------------------------------------------------------------------------
+				// Package
+				// ---------------------------------------------------------------------------------
+				{
+					"name": "python3: Build the `emb-spy` package.",
+					"working_dir": "${project_path}",
+					"shell_cmd": "python3 -m build",
+				},
+				// ---------------------------------------------------------------------------------
 			],
 		},
 	],

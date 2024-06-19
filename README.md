@@ -2,6 +2,23 @@
 
 Debugging framework for embedded systems.
 
+# Overview
+
+Reg-analyzer is intended for reading registers of a MCU and analyze and visualize the values.
+
+Reg-analyzer has two layers:
+1. Backend
+The backend connects to OpenOCD via telnet. In the future it will probably be able to start OpenOCD itself if necessary. Then the backend reads registers as fast as possible and gives their values to the application.
+2. Application
+
+Static
+analyze values, check for errors, calculate physical parameters based on register values.
+
+Dynamic
+visualize values: draw plots of values over time
+
+Script
+Set some registers in some sequence
 
 # Building instructions (for the maintainer)
 
