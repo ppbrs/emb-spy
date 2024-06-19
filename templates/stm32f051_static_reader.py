@@ -8,7 +8,7 @@ from emb_spy import ReaderConfigCoreReg
 from emb_spy import ReaderConfigCoreRegBits
 from emb_spy import ReaderConfigMemory
 from emb_spy import ReaderConfigMmapRegBits
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def main() -> None:
@@ -38,13 +38,13 @@ def main() -> None:
         ReaderConfigCoreRegBits("CONTROL.SPSEL"),
         ReaderConfigCoreRegBits("PSR.ExceptionNumber"),
 
-        # StaticReader.SymbolConfig("tick::sysTickCnt"),
+        # ReaderStatic.SymbolConfig("tick::sysTickCnt"),
 
     ]
 
     # elf_path = pathlib.PosixPath("project.elf").absolute()
 
-    results = StaticReader(
+    results = ReaderStatic(
         config=config,
         soc=STM32F051(),
         # elf_path=elf_path,

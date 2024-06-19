@@ -1,11 +1,11 @@
 """Part of AnalyzerSTM32F051 class."""
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 from emb_spy.analyzer.analyzer import ClockResetEnableItemStm32
 
 
 def report_clock_enable(
     self,  # : AnalyzerSTM32F051
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     # Circular import error does not allow importing AnalyzerSTM32F051 from this module, hence this:

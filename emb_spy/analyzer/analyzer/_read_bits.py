@@ -7,7 +7,7 @@ from emb_spy import ReaderConfigCoreRegBits
 from emb_spy import ReaderConfigMemory
 from emb_spy import ReaderConfigMmapReg
 from emb_spy import ReaderConfigMmapRegBits
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 from emb_spy.socs.soc import SoC
 
 ConfigType = list[
@@ -21,13 +21,13 @@ def read_bits(
     self,
     soc: SoC,
     config: ConfigType,
-) -> dict[str, StaticReader.Result]:
+) -> dict[str, ReaderStatic.Result]:
     """Read all necessary register bits from the SoC."""
     assert "Analyzer" in [cls.__name__ for cls in inspect.getmro(self.__class__)]
     # which is basically the same as issublass(self.__class__, Analyzer).
 
     port = Backend.find_openocd_telnet_port()
-    results: dict[str, StaticReader.Result] = StaticReader(
+    results: dict[str, ReaderStatic.Result] = ReaderStatic(
         config=config,
         port=port,
         soc=soc,

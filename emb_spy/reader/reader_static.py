@@ -10,14 +10,14 @@ from emb_spy.backend import Backend
 from emb_spy.reader._reader import _Reader
 
 
-class StaticReader(_Reader):
+class ReaderStatic(_Reader):
     """A class that contains methods of the application."""
 
     @dataclasses.dataclass
     class Result:
-        """An instance of this type will be returned to StaticReader's caller."""
+        """An instance of this type will be returned to ReaderStatic's caller."""
 
-        val: int | float
+        val: int | float  # or ctypes
         raw: bytes
         """Raw bytes as they were read from a SoC."""
         descr: str
@@ -59,7 +59,7 @@ class StaticReader(_Reader):
         print("mem_map", self.mem_map)
         print("core_map", self.core_map)
 
-        results: dict[str, StaticReader.Result] = {}
+        results: dict[str, ReaderStatic.Result] = {}
 
         for cfg in self.config_symbol:
             assert isinstance(cfg, self._SymbolConfigExt)
@@ -68,7 +68,9 @@ class StaticReader(_Reader):
             mem_data = self.mem_map[mem_addr]
             val = cfg.ctype.from_buffer_copy(mem_data)
             result = self.Result(
-                val=val, raw=mem_data, descr="")
+                val=val,
+                raw=mem_data,
+                descr=None)
             results[cfg.name] = result
 
         for cfg in self.config_memory:

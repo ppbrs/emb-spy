@@ -4,12 +4,12 @@ from emb_spy import ReaderConfigCoreReg
 from emb_spy import ReaderConfigCoreRegBits
 from emb_spy import ReaderConfigMmapReg
 from emb_spy import ReaderConfigMmapRegBits
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def _get_bits_config(
     self,
-) -> dict[str, StaticReader.Result]:
+) -> dict[str, ReaderStatic.Result]:
     """Read all necessary register bits from the SoC."""
     assert self.__class__.__name__ == "AnalyzerSTM32F745"
     # because I cannot import AnalyzerSTM32F745 from this module - circular import error.
@@ -46,7 +46,7 @@ def _get_bits_config(
     config.extend([ReaderConfigMmapReg(f"NVIC_ISPR{i}") for i in range(0, 8)])
     config.extend([ReaderConfigMmapReg(f"NVIC_IPR{i}") for i in range(0, 60)])
     # RCC
-    mmap_reg_names.extend(["RCC_CR", ])
+    mmap_reg_names.extend(["RCC_CR", "RCC_PLLCFGR", "RCC_CFGR"])
     # System timer
     mmap_reg_names.extend(["SYST_CSR", "SYST_RVR", "SYST_CVR", "SYST_CALIB", ])
 
@@ -61,6 +61,10 @@ def _get_bits_config(
     config.append(ReaderConfigCoreReg("PSP"))
     config.append(ReaderConfigCoreReg("MSP"))
     core_reg_names.extend(["CONTROL", "PSR"])
+    mmap_reg_names.extend([
+        "SCB_CCR",
+        # "CLIDR", "CTR", "CCSIDR", "CSSELR",
+    ])
 
     soc = STM32F745()
     map_name = soc.map_name()

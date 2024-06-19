@@ -4,13 +4,13 @@ from emb_spy import STM32H743
 from emb_spy import ReaderConfigCoreReg
 from emb_spy import ReaderConfigCoreRegBits
 from emb_spy import ReaderConfigMmapRegBits
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 from emb_spy.analyzer.analyzer import ConfigType
 
 
 def get_bits_config(
     self,
-) -> dict[str, StaticReader.Result]:
+) -> dict[str, ReaderStatic.Result]:
     """Read all necessary register bits from the SoC."""
     # Circular import error does not allow importin AnalyzerSTM32H743 from this module, hence this:
     assert self.__class__.__name__ == "AnalyzerSTM32H743"
@@ -50,6 +50,9 @@ def get_bits_config(
         "ADC2_SQR1", "ADC2_SQR2", "ADC2_SQR3", "ADC2_SQR4",
         "ADC3_CR", "ADC3_CFGR", "ADC3_CFGR2", "ADC3_PCSEL", "ADC3_SMPR1", "ADC3_SMPR2",
         "ADC3_SQR1", "ADC3_SQR2", "ADC3_SQR3", "ADC3_SQR4",
+    ])
+    mmap_reg_names.extend([
+        "DAC_CR", "DAC_MCR",
     ])
     mmap_reg_names.extend([
         f"DMAMUX{dma_mux_idx}_C{ch_idx}CR"

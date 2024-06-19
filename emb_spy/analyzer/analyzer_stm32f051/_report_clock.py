@@ -1,10 +1,10 @@
 """Part of AnalyzerSTM32F051."""
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def report_clock(
     self,
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     """Add a Clock chapter to the report."""

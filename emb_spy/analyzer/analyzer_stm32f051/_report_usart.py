@@ -1,11 +1,11 @@
 """Part of AnalyzerSTM32F051."""
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def report_usart(
     self,
     idx: int,
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     """Add USART chapters to the report."""

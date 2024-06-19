@@ -1,10 +1,10 @@
 """Part of AnalyzerSTM32H743 class."""
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def report_clock(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     """Add "Clock" chapter to the report."""
@@ -229,7 +229,7 @@ def report_clock(
 
 def _report_clock_mco(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     assert self.__class__.__name__ == "AnalyzerSTM32H743"

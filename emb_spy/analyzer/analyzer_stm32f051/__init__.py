@@ -8,7 +8,7 @@ import pprint
 from mdutils import MdUtils  # type: ignore
 
 from emb_spy import STM32F051
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 from emb_spy.analyzer.analyzer import Analyzer
 from emb_spy.analyzer.analyzer_stm32f051._bits_config import _get_bits_config
 from emb_spy.analyzer.analyzer_stm32f051._report_clock import report_clock
@@ -41,7 +41,7 @@ class AnalyzerSTM32F051(Analyzer):
 
     def _report(
         self,
-        bits_data: dict[str, StaticReader.Result],
+        bits_data: dict[str, ReaderStatic.Result],
         md_file
     ) -> None:
         """Analyze bits and write human-readable report to the file."""

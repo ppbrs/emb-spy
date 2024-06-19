@@ -1,12 +1,12 @@
 """Part of AnalyzerSTM32H743 class."""
 import itertools
 
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def report_dma(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     """Add "DMA" chapter to the report."""

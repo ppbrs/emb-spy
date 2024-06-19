@@ -1,10 +1,10 @@
 """Part of AnalyzerSTM32H743 class."""
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def report_adc(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     """Add "ADC" chapter to the report."""
@@ -63,7 +63,7 @@ def report_adc(
 
 def _report_adc_common(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file,
     idx: int,  # 12, or 3.
 ) -> None:
@@ -120,7 +120,7 @@ def _report_adc_common(
 
 def _report_adc_individual(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file,
     idx: int,  # 1, 2, or 3.
 ) -> None:
@@ -288,7 +288,7 @@ def _report_adc_individual(
             conv_cycles_total += conv_cycles[ch]
             sar_cycles_total += sar_cycles[ch]
             smp_cycles_total += smp_cycles[ch]
-        md_file.new_line(f"* Regular sequence = {seq_len} conversions: ")
+        md_file.new_line(f"* Regular sequence = {seq_len} conversions (max = 16 conversins): ")
         md_file.new_line(
             "\t* "
             + " ⇨ ".join(get_adc_channel_descr(adc_idx=idx, ch_idx=ch) for ch in seq_chs)

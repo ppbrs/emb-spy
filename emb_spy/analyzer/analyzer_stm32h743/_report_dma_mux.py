@@ -1,10 +1,10 @@
 """Part of AnalyzerSTM32H743 class."""
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def report_dma_mux(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     """Add "DMAMUX" chapter to the report."""

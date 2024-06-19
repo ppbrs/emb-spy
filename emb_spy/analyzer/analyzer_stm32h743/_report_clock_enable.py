@@ -1,11 +1,11 @@
 """Part of AnalyzerSTM32H743 class."""
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 from emb_spy.analyzer.analyzer import ClockResetEnableItemStm32
 
 
 def report_clock_enable(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     """Add "Clock reset/enabled" chapter to the report."""
@@ -19,7 +19,7 @@ def report_clock_enable(
 
 def _report_clock_enable_d1(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     items = [
@@ -36,7 +36,7 @@ def _report_clock_enable_d1(
 
 def _report_clock_enable_d2(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     items = [
@@ -75,7 +75,7 @@ def _report_clock_enable_d2(
 
 def _report_clock_enable_d3(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     items = [

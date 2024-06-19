@@ -2,12 +2,12 @@
 import inspect
 import math
 
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def report_nvic_stm32(
     self,
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file,
     irq_num: int,
     irq_descr: dict[int, str],
@@ -18,7 +18,7 @@ def report_nvic_stm32(
 
     md_file.new_header(level=1, title="NVIC")
 
-    legend: list[str] = ["IRQn", "Enabled", "Pending", "Priority", "",]
+    legend: list[str] = ["IRQn", "Enabled", "Pending", "Priority", "Legend",]
     table: list[list[str]] = [[] for _ in range(irq_num)]
 
     reg_num = int(math.ceil(irq_num / 32))

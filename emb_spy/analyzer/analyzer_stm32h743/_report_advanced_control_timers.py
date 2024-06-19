@@ -1,10 +1,10 @@
 """Part of AnalyzerSTM32H743 class."""
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def report_advanced_control_timers(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file,
 ) -> None:
     """Add "Advanced-control timers" chapter to the report."""
@@ -20,7 +20,7 @@ def report_advanced_control_timers(
 
 def _report_advanced_control_timer(
     self,  # : AnalyzerSTM32H743
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     idx: int,
     md_file,
 ) -> None:

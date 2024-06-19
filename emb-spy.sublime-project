@@ -34,14 +34,14 @@
 				},
 				{
 					"name": "Run STM32F745 Analyzer.",
-					"working_dir": "${project_path}/emb_spy/analyzer/analyzer_stm32f745",
-					"shell_cmd": "python3 __init__.py",
+					"working_dir": "${project_path}/templates",
+					"shell_cmd": "python3 stm32f745_analyzer.py",
 					"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
 				},
 				{
 					"name": "Run STM32F051 Analyzer.",
-					"working_dir": "${project_path}/emb_spy/analyzer/analyzer_stm32f051",
-					"shell_cmd": "python3 __init__.py",
+					"working_dir": "${project_path}/templates",
+					"shell_cmd": "python3 stm32f051_analyzer.py",
 					"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
 				},
 				// ---------------------------------------------------------------------------------

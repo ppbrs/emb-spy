@@ -11,10 +11,28 @@
 		{
 			"label": "Run STM32F051 Analyzer.",
 			"type": "shell",
-			"command": "clear && python3 __init__.py",
+			"command": "clear && python3 stm32f051_analyzer.py",
 			"group": "build",
 			"options": {
-				"cwd": "${workspaceFolder}/emb_spy/analyzer/analyzer_stm32f051"
+				"cwd": "${workspaceFolder}/templates"
+			},
+		},
+		{
+			"label": "Run STM32F745 Analyzer.",
+			"type": "shell",
+			"command": "clear && python3 stm32f745_analyzer.py",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/templates"
+			},
+		},
+		{
+			"label": "Run STM32H743 Analyzer.",
+			"type": "shell",
+			"command": "clear && python3 stm32h743_analyzer.py",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/templates"
 			},
 		},
 	]

@@ -43,7 +43,7 @@ class _Reader(_ReaderMmapReg, _ReaderCoreReg, _ReaderMemory, _ReaderSymbol):
         restart_if_not_running: bool = False,
     ) -> None:
         """
-        Common constructor to StaticReader and DynamicReader.
+        Common constructor to ReaderStatic and ReaderDynamic.
 
         :param logger_suffix: Optional suffix for the logger name.
         """

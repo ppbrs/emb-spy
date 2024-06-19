@@ -1,11 +1,11 @@
 """Part of Analyzer class."""
 import inspect
 
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def _report_stack(
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file,
 ) -> None:
     sp_val = bits_data["SP"].val
@@ -20,7 +20,7 @@ def _report_stack(
 
 
 def _report_pc_lr(
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file,
 ) -> None:
     pc_val = bits_data["PC"].val
@@ -31,7 +31,7 @@ def _report_pc_lr(
 
 def report_core_armv7e_m(
     self,
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file,
 ) -> None:
     """Add a Core chapter to the report."""
@@ -133,7 +133,7 @@ def report_core_armv7e_m(
 
 def report_core_armv6_m(
     self,
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file,
 ) -> None:
     """Add a System Timer chapter to the report."""

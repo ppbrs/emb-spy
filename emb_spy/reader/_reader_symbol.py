@@ -79,7 +79,7 @@ class _ReaderSymbol:
                                 demangled_name = cpp_demangle.demangle(symbol.name)
                             except ValueError:
                                 demangled_name = None
-                            for idx, cfg in enumerate( self.config_symbol):
+                            for idx, cfg in enumerate(self.config_symbol):
                                 if cfg.name == demangled_name or cfg.name == symbol.name:
                                     self.config_symbol[idx].found_in_elf = True
                                     self.logger.debug("Found `%s` in ELF.", cfg.name)
@@ -87,7 +87,7 @@ class _ReaderSymbol:
                                     if ctypes.sizeof(cfg.ctype) != mem_data_size:
                                         raise ValueError(
                                             f"`{cfg.name}`: own size is {mem_data_size}B, "
-                                            "requested {ctypes.sizeof(cfg.ctype)}B ({cfg.ctype}).")
+                                            f"requested {ctypes.sizeof(cfg.ctype)}B ({cfg.ctype}).")
                                     mem_addr = symbol["st_value"]
                                     self.config_symbol[idx].mem_addr = mem_addr
                                     mem_data_size = ((mem_data_size + 3) // 4) * 4

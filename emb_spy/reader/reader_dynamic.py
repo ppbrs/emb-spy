@@ -12,7 +12,7 @@ from emb_spy.backend import Backend
 from ._reader import _Reader
 
 
-class DynamicReader(_Reader):
+class ReaderDynamic(_Reader):
     """A class that contains methods of the application."""
 
     def __call__(self, duration: float) -> list:

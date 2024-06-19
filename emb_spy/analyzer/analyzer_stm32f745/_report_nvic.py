@@ -1,5 +1,5 @@
 """Part of AnalyzerSTM32F745."""
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 _irq_num = 98
 _irq_descr = {irqn: f"IRQ{irqn}" for irqn in range(_irq_num)}
@@ -121,7 +121,7 @@ _irq_descr[25] = "TIM1_UP_TIM10TIM1 Update interrupt and TIM10 global interrupt"
 
 def report_nvic(
     self,
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     """Add the NVIC chapter to the report."""

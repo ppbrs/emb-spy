@@ -1,4 +1,4 @@
-"""Backend class and usage examples."""
+"""Backend class."""
 import ctypes
 import logging
 import socket
@@ -14,7 +14,7 @@ import psutil
 
 class Backend:
     """
-    An instance of Backend provides interface for the following.
+    An instance of Backend provides interface for the following:
 
     1) connecting to a running OpenOCD process via telnet and
     2) reading or writing registers,
@@ -376,38 +376,3 @@ class Backend:
             raise NotImplementedError(f"{ctype}")
         self.tlnt.write(tncmd)
         _ = self.tlnt.read_until(b">", timeout=2.0).decode("ascii")
-
-
-def run_example_1() -> None:
-    """Connect to the default target and send a generic command."""
-    logging.basicConfig(level=logging.INFO)
-    host = "localhost"
-    port = Backend.find_openocd_telnet_port()
-    with Backend(host=host, port=port, target_name=None) as backend:
-        name, state = backend.get_current_target_state()
-        print(f"State: {name=}, {state=}.")
-        version = backend.request(cmd="version", timeout=0.5)
-        print(version)
-        target = backend.request(cmd="target current", timeout=0.5)
-        print(target)
-        # backend.request(cmd="reset", timeout=0.5)
-    print("\n\n")
-
-
-def run_example_2() -> None:
-    logging.basicConfig(level=logging.DEBUG)
-    port = Backend.find_openocd_telnet_port()
-    target0 = None
-    target1 = "master.cpu0"
-    with Backend(port=port, target_name=target0, logger_suffix="0") as backend0, \
-            Backend(port=port, target_name=target1, logger_suffix="1") as backend1:
-        logging.info("Running user requests.")
-        target_0 = backend0.request(cmd="target current", timeout=0.5)
-        target_1 = backend1.request(cmd="target current", timeout=0.5)
-        print(f"{target_0=}, {target_1=}")
-    print("\n\n")
-
-
-if __name__ == "__main__":
-    run_example_1()
-    # run_example_2()

@@ -4,12 +4,12 @@ from emb_spy import ReaderConfigCoreReg
 from emb_spy import ReaderConfigCoreRegBits
 from emb_spy import ReaderConfigMmapReg
 from emb_spy import ReaderConfigMmapRegBits
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def _get_bits_config(
     self,
-) -> dict[str, StaticReader.Result]:
+) -> dict[str, ReaderStatic.Result]:
     """Read all necessary register bits from the SoC."""
     assert self.__class__.__name__ == "AnalyzerSTM32F051"
     # This is equivalent to assert isinstance(self, AnalyzerSTM32F051).

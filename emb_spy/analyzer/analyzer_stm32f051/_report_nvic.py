@@ -1,5 +1,5 @@
 """Part of AnalyzerSTM32F051."""
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 _irq_descr = {
     0: "WWDG",
@@ -39,7 +39,7 @@ _irq_descr = {
 
 def report_nvic(
     self,
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file
 ) -> None:
     """Add the NVIC chapter to the report."""

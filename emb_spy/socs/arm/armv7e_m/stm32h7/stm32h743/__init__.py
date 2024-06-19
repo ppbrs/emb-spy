@@ -8,6 +8,7 @@ from emb_spy.socs.soc import SoC
 
 from ._adc import init_adc
 from ._bdma import init_bdma
+from ._dac import init_dac
 from ._dma import init_dma
 from ._dma_mux import init_dma_mux
 from ._i2c import init_i2c
@@ -49,6 +50,7 @@ class STM32H743(SoC):
         self += ARMV7EM().regs
         init_adc(self)
         init_bdma(self)
+        init_dac(self)
         init_dma(self)
         init_dma_mux(self)
         init_hrtim(self)

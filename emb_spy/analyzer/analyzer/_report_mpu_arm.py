@@ -1,12 +1,12 @@
 """Part of Analyzer class."""
 import inspect
 
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def report_mpu_armv7e_m(
     self,
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file,
 ) -> None:
     """Add a Core chapter to the report."""

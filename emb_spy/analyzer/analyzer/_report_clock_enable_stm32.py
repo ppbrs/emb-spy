@@ -2,7 +2,7 @@
 import dataclasses
 import inspect
 
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 @dataclasses.dataclass
@@ -17,7 +17,7 @@ class ClockResetEnableItemStm32:
 
 def report_clock_enable_stm32(
     self,
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file,
     items: list[ClockResetEnableItemStm32],
     title: str

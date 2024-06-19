@@ -2,12 +2,12 @@
 import inspect
 from collections.abc import Callable
 
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def report_gpio_stm32(
     self,
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file,
     port_list: list[str],
     af_descr_getter: Callable[[str, int, int], str] | None,

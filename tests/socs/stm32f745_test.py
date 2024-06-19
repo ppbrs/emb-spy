@@ -34,7 +34,7 @@ def test_stm32f745_mmap() -> None:
     names.extend(["MPU_TYPE", "MPU_CTRL", ])
     # ----------------------------------------------------------------------------------------------
     # RCC:
-    names.extend(["RCC_CR", ])
+    names.extend(["RCC_CR", "RCC_PLLCFGR", "RCC_CFGR"])
     # ----------------------------------------------------------------------------------------------
     # SYSTICK:
     names.extend(["SYST_CSR", "SYST_RVR", "SYST_CVR", "SYST_CALIB", ])

@@ -1,12 +1,12 @@
 """Part of Analyzer class."""
 import inspect
 
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 
 
 def report_systick_stm32(
     self,
-    bits_data: dict[str, StaticReader.Result],
+    bits_data: dict[str, ReaderStatic.Result],
     md_file,
 ) -> None:
     """Add a System Timer chapter to the report."""
@@ -28,7 +28,9 @@ def report_systick_stm32(
         systick_freq = self.state.systick_freq
         md_file.new_line(f"* Clock source = external clock, {systick_freq / 1e6} MHz")
     else:
-        systick_freq = self.state.sys_freq
+        systick_freq = getattr(self.state, "sys_freq", None)
+        if systick_freq is None:
+            return  # todo
         md_file.new_line(f"* Clock source = processor clock, {systick_freq / 1e6} MHz")
 
     period_ticks = bits_data["SYST_RVR.RELOAD"].val + 1

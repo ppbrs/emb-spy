@@ -8,7 +8,7 @@ import pprint
 from mdutils import MdUtils  # type: ignore
 
 from emb_spy import STM32F745
-from emb_spy import StaticReader
+from emb_spy import ReaderStatic
 from emb_spy.analyzer.analyzer import Analyzer
 from emb_spy.analyzer.analyzer_stm32f745._bits_config import _get_bits_config
 from emb_spy.analyzer.analyzer_stm32f745._report_clock import _report_clock
@@ -40,7 +40,7 @@ class AnalyzerSTM32F745(Analyzer):
 
     def _report(
         self,
-        bits_data: dict[str, StaticReader.Result],
+        bits_data: dict[str, ReaderStatic.Result],
         md_file
     ) -> None:
         """Analyze bits and write human-readable report to the file."""
@@ -56,7 +56,7 @@ class AnalyzerSTM32F745(Analyzer):
         self.report_gpio_stm32(
             bits_data=bits_data,
             md_file=md_file,
-            port_list=["A", "B", "C"],
+            port_list=["A", "B", "C", "D", "E"],
             af_descr_getter=_get_af_descr,
         )
         report_nvic(self, bits_data, md_file)
@@ -70,26 +70,3 @@ class AnalyzerSTM32F745(Analyzer):
         # _report_clock_enable(self, bits_data, md_file)
 
         pprint.PrettyPrinter(indent=4, width=40,).pprint(self.state)
-
-
-def main():
-    """Run the analyzer."""
-    logging.basicConfig(level=logging.INFO)
-
-    jtag_target_name = "solo.cpu"
-    # jtag_target_name = "master.cpu"
-    # jtag_target_name = "axis.cpu"
-
-    board_cfg = Analyzer.BoardConfig(
-        jtag_target_name=jtag_target_name,
-        resonator_freq=24e6,
-        external_freq=4e6,
-    )
-    AnalyzerSTM32F745(
-        board_cfg=board_cfg,
-        report_file_path=pathlib.PosixPath("analyzer_stm32f745.md"),
-    ).run()
-
-
-if __name__ == "__main__":
-    main()
