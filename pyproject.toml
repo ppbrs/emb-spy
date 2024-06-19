@@ -14,7 +14,9 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-	"pyelftools >= 0.31"
+	"mdutils == 1.6.0",
+	"pyelftools >= 0.31",
+	"psutil",
 ]
 
 # For a complete list of classifiers, see https://pypi.org/classifiers/.
@@ -24,6 +26,15 @@ classifiers = [
 	"Operating System :: OS Independent",
 ]
 
+# [build-system] declares which build backend to use - a library that takes a source tree
+# and builds a source distribution (*.tar.gz) or wheel (*.whl) from it.
+# Examples:
+# 	hatchling (https://packaging.python.org/en/latest/key_projects/#setuptools)
+# 		https://pypi.org/project/hatchling/
+# 	setuptools (https://packaging.python.org/en/latest/key_projects/#setuptools)
+# 		https://pypi.org/project/setuptools/
+# Also [build-system] allows declaring which dependencies are needed to build the project,
+# see `requires`.
 [build-system]
 requires = ["hatchling>=1.18.0"]
 build-backend = "hatchling.build"
