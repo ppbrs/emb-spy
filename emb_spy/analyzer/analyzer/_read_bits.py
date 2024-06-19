@@ -32,7 +32,8 @@ def read_bits(
         port=port,
         soc=soc,
         target_name=self.board_cfg.jtag_target_name,
-        start_if_reset=True,
+        restart_if_not_running=False,
+        halt_if_running=False,
     ).read()
 
     port = Backend.find_openocd_telnet_port()

@@ -7,6 +7,7 @@ def report_adc(
     bits_data: dict[str, StaticReader.Result],
     md_file
 ) -> None:
+    """Add "ADC" chapter to the report."""
     # Circular import error does not allow importin AnalyzerSTM32H743 from this module, hence this:
     assert self.__class__.__name__ == "AnalyzerSTM32H743"
 
@@ -18,23 +19,32 @@ def report_adc(
     pa1so = bits_data["SYSCFG_PMCR.PA1SO"].val
     pc2so = bits_data["SYSCFG_PMCR.PC2SO"].val
     pc3so = bits_data["SYSCFG_PMCR.PC3SO"].val
+    boost_ena = bits_data["SYSCFG_PMCR.BOOSTE"].val
+
+    switch = {
+        True: " --x-- ",  # open
+        False: " <---> "}  # closed
     md_file.new_line(
-        "\t* PA0 (ADC1_INP16)" + (" --x-- " if pa0so else " <---> ") + "PA0_C (ADC12_INN1, ADC12_INP0)")
+        "\t* PA0 (ADC1_INP16)" + switch[pa0so] + "PA0_C (ADC12_INN1, ADC12_INP0)")
     md_file.new_line(
-        "\t* PA1 (ADC1_INN16, ADC1_INP17)" + (" --x-- " if pa1so else " <---> ") + "PA1_C (ADC12_INP1)")
+        "\t* PA1 (ADC1_INN16, ADC1_INP17)" + switch[pa1so] + "PA1_C (ADC12_INP1)")
     md_file.new_line(
-        "\t* PC2 (ADC123_INN11, ADC123_INP12)" + (" --x-- " if pc2so else " <---> ")
-        + "PC2_C (ADC3_INN1, ADC3_INP0)")
+        "\t* PC2 (ADC123_INN11, ADC123_INP12)" + switch[pc2so] + "PC2_C (ADC3_INN1, ADC3_INP0)")
     md_file.new_line(
-        "\t* PC3 (ADC12_INN12, ADC12_INP13)" + (" --x-- " if pc3so else " <---> ")
-        + "PC3_C (ADC3_INP1)")
+        "\t* PC3 (ADC12_INN12, ADC12_INP13)" + switch[pc3so] + "PC3_C (ADC3_INP1)")
+    if boost_ena:
+        # boost_vdd = bits_data["SYSCFG_PMCR.BOOSTVDDSEL"].val
+        md_file.new_line("\t* Supply voltage booster enabled.")
+    else:
+        md_file.new_line("\t* Supply voltage booster disabled.")
 
     ker_clk_src = bits_data["RCC_D3CCIPR.ADCSEL"].val
     if ker_clk_src == 0:
         if self.state.pll2_p_freq is not None:
             self.state.adc_ker_input_freq = self.state.pll2_p_freq
             md_file.new_line(
-                f"* ADC kernel input clock is from PLL2.P: {self.state.adc_ker_input_freq / 1e6} MHz.")
+                "* ADC kernel input clock is from PLL2.P: "
+                f"{self.state.adc_ker_input_freq / 1e6} MHz.")
         else:
             md_file.new_line("* ADC kernel clock is from PLL2.P which is OFF.")
             return
@@ -158,10 +168,9 @@ def _report_adc_individual(
             return {
                 0b000: 16, 0b101: 14, 0b110: 12, 0b011: 10, 0b111: 8,
             }[bits_data[f"{adci}_CFGR.RES"].val]
-        else:
-            return {
-                0b000: 16, 0b001: 14, 0b010: 12, 0b011: 10, 0b100: 8,
-            }[bits_data[f"{adci}_CFGR.RES"].val]
+        return {
+            0b000: 16, 0b001: 14, 0b010: 12, 0b011: 10, 0b100: 8,
+        }[bits_data[f"{adci}_CFGR.RES"].val]
 
     def report_resolution():
         resolution = get_resolution()
@@ -191,7 +200,9 @@ def _report_adc_individual(
             ratio = bits_data[f"{adci}_CFGR2.OSVR"].val + 1
             lshift = bits_data[f"{adci}_CFGR2.LSHIFT"].val
             rshift = bits_data[f"{adci}_CFGR2.OVSS"].val
-            md_file.new_line(f"* Oversampling: ON, ratio = {ratio}x, left shift = {lshift}, right shift = {rshift}.")
+            md_file.new_line(
+                f"* Oversampling: ON, ratio = {ratio}x, "
+                f"left shift = {lshift}, right shift = {rshift}.")
         else:
             md_file.new_line("* Oversampling: OFF.")
     report_oversampling()
@@ -206,12 +217,21 @@ def _report_adc_individual(
 
     def report_enabled_channels():
         # Construct a table of enabled channels.
-        legend, table = ["Channel", "Sampling time", "SAR time", "Conversion time", "Constraints"], []
+        legend, table = ["Channel", "Type", "Sampling time", "SAR time", "Conversion time"], []
         for ch in range(0, 20):
             if not bits_data[f"{adci}_PCSEL.PCSEL{ch}"].val:
                 continue
             table.append(get_adc_channel_descr(adc_idx=idx, ch_idx=ch))
 
+            # Type
+            if (idx, ch) in [(1, 0), (2, 0), (1, 1), (2, 1), (3, 0), (3, 1)]:
+                table.append("direct")
+            elif ch <= 5:
+                table.append("fast")
+            else:
+                table.append("slow")
+
+            # Sampling time
             smp = bits_data[f"{adci}_SMPR1.SMP{ch}" if ch < 10 else f"{adci}_SMPR2.SMP{ch}"].val
             smp_cycles[ch] = {
                 0b000: 1.5,
@@ -225,6 +245,7 @@ def _report_adc_individual(
             smp_ns = smp_cycles[ch] / adc_ker_freq * 1e9
             table.append(f"{smp} = {smp_cycles[ch]} cycles = {round(smp_ns)} ns")
 
+            # SAR time
             sar_cycles[ch] = {
                 16: 8.5,
                 14: 7.5,
@@ -234,16 +255,12 @@ def _report_adc_individual(
             sar_ns = sar_cycles[ch] / adc_ker_freq * 1e9
             table.append(f"{sar_cycles[ch]} cycles = {round(sar_ns)} ns")
 
+            # Conversion time
             conv_cycles[ch] = smp_cycles[ch] + sar_cycles[ch]
             conv_ns = conv_cycles[ch] / adc_ker_freq * 1e9
-            table.append(f"{conv_cycles[ch]} cycles = {round(conv_ns)} ns")
-
-            if (idx, ch) in [(1, 0), (2, 0), (1, 1), (2, 1), (3, 0), (3, 1)]:
-                table.append("direct channel")
-            elif ch <= 5:
-                table.append("fast channel")
-            else:
-                table.append("slow channel")
+            conv_ksps = 1 / conv_ns * 1e6
+            table.append(
+                f"{conv_cycles[ch]} cycles = {round(conv_ns)} ns = {round(conv_ksps)} kSps")
 
         md_file.new_line()
         md_file.new_table(
@@ -280,9 +297,12 @@ def _report_adc_individual(
         smp_ns_total = smp_cycles_total * os_ratio / adc_ker_freq * 1e9
         sar_ns_total = sar_cycles_total * os_ratio / adc_ker_freq * 1e9
         conv_ns_total = conv_cycles_total * os_ratio / adc_ker_freq * 1e9
-        md_file.new_line(f"\t* Conversion: {conv_cycles_total} cycles × {os_ratio} = {round(conv_ns_total)} ns.")
-        md_file.new_line(f"\t\t* Sampling: {smp_cycles_total} cycles × {os_ratio} = {round(smp_ns_total)} ns.")
-        md_file.new_line(f"\t\t* SAR: {sar_cycles_total} cycles × {os_ratio} = {round(sar_ns_total)} ns.")
+        md_file.new_line(
+            f"\t* Conversion: {conv_cycles_total} cycles × {os_ratio} = {round(conv_ns_total)} ns.")
+        md_file.new_line(
+            f"\t\t* Sampling: {smp_cycles_total} cycles × {os_ratio} = {round(smp_ns_total)} ns.")
+        md_file.new_line(
+            f"\t\t* SAR: {sar_cycles_total} cycles × {os_ratio} = {round(sar_ns_total)} ns.")
 
     report_regular_sequence()
 
@@ -328,7 +348,7 @@ def _report_adc_individual(
 
 def get_adc_channel_descr(adc_idx: int, ch_idx: int) -> str:
     """
-    Returns a string of the form "XX (YYY)".
+    Return a string of the form "XX (YYY)".
 
     PA0 = ADC1_INP16
     PA0_C = ADC12_INN1,ADC12_INP0

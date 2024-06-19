@@ -23,7 +23,7 @@ def report_clock_enable_stm32(
     title: str
 ) -> None:
     """
-    Add "Clock reset/enable" chapter to the report.
+    Add "Clock reset/enabled" chapter to the report.
 
     """
     assert "Analyzer" in [cls.__name__ for cls in inspect.getmro(self.__class__)]

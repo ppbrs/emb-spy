@@ -4,7 +4,7 @@ from emb_spy.socs.reg import MmapReg
 from emb_spy.socs.soc import SoC
 
 
-def _init_i2c(self: SoC):
+def init_i2c(self: SoC):
     assert self.__class__.__name__ == "STM32H743"
 
     for x, i2cx_base in enumerate(

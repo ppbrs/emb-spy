@@ -7,6 +7,7 @@ def report_clock(
     bits_data: dict[str, StaticReader.Result],
     md_file
 ) -> None:
+    """Add "Clock" chapter to the report."""
     # Circular import error does not allow importin AnalyzerSTM32H743 from this module, hence this:
     assert self.__class__.__name__ == "AnalyzerSTM32H743"
 
@@ -17,7 +18,8 @@ def report_clock(
     if hsi_on and hsi_rdy:
         hsi_div = {0b00: 1, 0b01: 2, 0b10: 4, 0b11: 8, }[bits_data["RCC_CR.HSIDIV"].val]
         self.state.hsi_freq = 64e6 / hsi_div
-        md_file.new_line(f"* HSI is ON and ready, 64Mhz / {hsi_div} = {self.state.hsi_freq / 1e6} MHz.")
+        md_file.new_line(
+            f"* HSI is ON and ready, 64Mhz / {hsi_div} = {self.state.hsi_freq / 1e6} MHz.")
     else:
         md_file.new_line("* HSI is OFF or not ready")
 
@@ -33,10 +35,12 @@ def report_clock(
         else:
             if not isinstance(hse_freq := self.board_cfg.resonator_freq, int | float):
                 raise ValueError("Valid `resonator_freq` is required.")
-            md_file.new_line(f"* HSE is ON and ready, crystal/ceramic resonator, {hse_freq / 1e6} MHz.")
+            md_file.new_line(
+                f"* HSE is ON and ready, crystal/ceramic resonator, {hse_freq / 1e6} MHz.")
         self.state.hse_freq = hse_freq
         if hse_cs_on:
-            md_file.new_line("\t* Clock Security System (CSS) is " + ("ON" if hse_cs_on else "OFF") + " on HSE.")
+            md_file.new_line(
+                "\t* Clock Security System (CSS) is " + ("ON" if hse_cs_on else "OFF") + " on HSE.")
     else:
         md_file.new_line("* HSE is OFF or not ready")
 
@@ -194,7 +198,8 @@ def report_clock(
         else:
             timx_apb1_factor = 4
     self.state.timx_freq = self.state.apb1_freq * timx_apb1_factor
-    md_file.new_line(f"* TIMx clock (D2, advanced-control timers, TIM1/TIM8): {self.state.timx_freq / 1e6} MHz.")
+    md_file.new_line(
+        f"* TIMx clock (D2, advanced-control timers, TIM1/TIM8): {self.state.timx_freq / 1e6} MHz.")
 
     d2ppre2 = bits_data["RCC_D2CFGR.D2PPRE2"].val
     if d2ppre2 == 0:
@@ -207,7 +212,9 @@ def report_clock(
         else:
             timy_apb1_factor = 4
     self.state.timy_freq = self.state.apb1_freq * timy_apb1_factor
-    md_file.new_line(f"* TIMy clock (D2, general-purpose timers, other than TIM1/TIM8): {self.state.timy_freq / 1e6} MHz.")
+    md_file.new_line(
+        "* TIMy clock (D2, general-purpose timers, other than TIM1/TIM8): "
+        f"{self.state.timy_freq / 1e6} MHz.")
 
     hrtimsel = bits_data["RCC_CFGR.HRTIMSEL"].val
     if hrtimsel == 0:
@@ -232,7 +239,9 @@ def _report_clock_mco(
         mco1_div = bits_data["RCC_CFGR.MCO1PRE"].val
         if mco1_src == 0b010:  # hse_ck
             self.state.mco1_freq = self.state.hse_freq / mco1_div
-            md_file.new_line(f"* MCO1 is from HSE: {self.state.hse_freq / 1e6} / {mco1_div} = {self.state.mco1_freq / 1e6} MHz.")
+            md_file.new_line(
+                "* MCO1 is from HSE: "
+                f"{self.state.hse_freq / 1e6} / {mco1_div} = {self.state.mco1_freq / 1e6} MHz.")
         else:
             raise NotImplementedError
     else:
@@ -240,5 +249,4 @@ def _report_clock_mco(
     mco2_enabled = bits_data["RCC_CFGR.MCO2PRE"].val > 0
     if mco2_enabled:
         raise NotImplementedError
-    else:
-        md_file.new_line("* MCO2 is OFF.")
+    md_file.new_line("* MCO2 is OFF.")

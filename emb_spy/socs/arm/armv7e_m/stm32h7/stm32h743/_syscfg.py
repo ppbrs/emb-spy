@@ -4,7 +4,7 @@ from emb_spy.socs.reg import MmapReg
 from emb_spy.socs.soc import SoC
 
 
-def _init_syscfg(self: SoC) -> None:
+def init_syscfg(self: SoC) -> None:
     assert self.__class__.__name__ == "STM32H743"
     base = 0x58000400
     # ==============================================================================================
@@ -18,6 +18,19 @@ def _init_syscfg(self: SoC) -> None:
             Bits(bits=26, name="PC2SO", descr="PC2 to PC2_C Switch Open",),
             Bits(bits=25, name="PA1SO", descr="PA1 to PA1_C Switch Open",),
             Bits(bits=24, name="PA0SO", descr="PA0 to PA0_C Switch Open",),
+            Bits(bits=range(21, 24), name="EPIS", descr="Ethernet PHY Interface Selection",),
+            # 000: MII
+            # 100: RMII
+            Bits(bits=9, name="BOOSTVDDSEL", descr="Analog switch supply voltage selection"),
+            Bits(bits=8, name="BOOSTE", descr="Booster Enable"),
+            Bits(bits=7, name="PB9FMP", descr="PB(9) Fm+"),
+            Bits(bits=6, name="PB8FMP", descr="PB(8) Fm+"),
+            Bits(bits=5, name="PB7FMP", descr="PB(7) Fm+"),
+            Bits(bits=4, name="PB6FMP", descr="PB(6) Fm+"),
+            Bits(bits=3, name="I2C4FMP", descr="I2C4 Fm+"),
+            Bits(bits=2, name="I2C3FMP", descr="I2C3 Fm+"),
+            Bits(bits=1, name="I2C2FMP", descr="I2C2 Fm+"),
+            Bits(bits=0, name="I2C1FMP", descr="I2C1 Fm+"),
         ]))
 
     self.append(MmapReg(

@@ -7,6 +7,7 @@ def report_hrtim(
     bits_data: dict[str, StaticReader.Result],
     md_file
 ) -> None:
+    """Add "HRTIM" chapter to the report."""
     # Circular import error does not allow importin AnalyzerSTM32H743 from this module, hence this:
     assert self.__class__.__name__ == "AnalyzerSTM32H743"
 

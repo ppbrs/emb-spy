@@ -4,7 +4,7 @@ from emb_spy.socs.reg import MmapReg
 from emb_spy.socs.soc import SoC
 
 
-def _init_system_flash(self: SoC) -> None:
+def init_system_flash(self: SoC) -> None:
     assert self.__class__.__name__ == "STM32H743"
 
     self.append(MmapReg(

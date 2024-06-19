@@ -4,7 +4,7 @@ from emb_spy.socs.reg import MmapReg
 from emb_spy.socs.soc import SoC
 
 
-def _init_pwr(self: SoC) -> None:
+def init_pwr(self: SoC) -> None:
     assert self.__class__.__name__ == "STM32H743"
 
     pwr_base = 0x58024800

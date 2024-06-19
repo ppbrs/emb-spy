@@ -1,6 +1,6 @@
 """Module for class STM32F745 SoC."""
 from emb_spy.socs.arm.armv7e_m import ARMV7EM
-from emb_spy.socs.arm.stm32._gpio import _init_gpio
+from emb_spy.socs.arm.stm32._gpio import init_gpio
 from emb_spy.socs.arm.stm32._tim1_tim8 import init_tim1_tim8
 from emb_spy.socs.soc import SoC
 from emb_spy.socs.arm.armv7e_m.stm32f7.stm32f745._rcc import init_rcc
@@ -100,14 +100,14 @@ class STM32F745(SoC):
         init_tim1_tim8(self, prefix="TIM8", base=self.TIM8_BASE)
 
     def init_gpio(self):
-        _init_gpio(self, prefix="GPIOA", base=self.GPIOA_BASE)
-        _init_gpio(self, prefix="GPIOB", base=self.GPIOB_BASE)
-        _init_gpio(self, prefix="GPIOC", base=self.GPIOC_BASE)
-        _init_gpio(self, prefix="GPIOD", base=self.GPIOD_BASE)
-        _init_gpio(self, prefix="GPIOE", base=self.GPIOE_BASE)
-        _init_gpio(self, prefix="GPIOF", base=self.GPIOF_BASE)
-        _init_gpio(self, prefix="GPIOG", base=self.GPIOG_BASE)
-        _init_gpio(self, prefix="GPIOH", base=self.GPIOH_BASE)
-        _init_gpio(self, prefix="GPIOI", base=self.GPIOI_BASE)
-        _init_gpio(self, prefix="GPIOJ", base=self.GPIOJ_BASE)
-        _init_gpio(self, prefix="GPIOK", base=self.GPIOK_BASE)
+        init_gpio(self, prefix="GPIOA", base=self.GPIOA_BASE)
+        init_gpio(self, prefix="GPIOB", base=self.GPIOB_BASE)
+        init_gpio(self, prefix="GPIOC", base=self.GPIOC_BASE)
+        init_gpio(self, prefix="GPIOD", base=self.GPIOD_BASE)
+        init_gpio(self, prefix="GPIOE", base=self.GPIOE_BASE)
+        init_gpio(self, prefix="GPIOF", base=self.GPIOF_BASE)
+        init_gpio(self, prefix="GPIOG", base=self.GPIOG_BASE)
+        init_gpio(self, prefix="GPIOH", base=self.GPIOH_BASE)
+        init_gpio(self, prefix="GPIOI", base=self.GPIOI_BASE)
+        init_gpio(self, prefix="GPIOJ", base=self.GPIOJ_BASE)
+        init_gpio(self, prefix="GPIOK", base=self.GPIOK_BASE)

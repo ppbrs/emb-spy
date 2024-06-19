@@ -4,7 +4,7 @@ from emb_spy.socs.reg import MmapReg
 from emb_spy.socs.soc import SoC
 
 
-def _init_gpio(
+def init_gpio(
     self: SoC,
     prefix: str,
     base: int

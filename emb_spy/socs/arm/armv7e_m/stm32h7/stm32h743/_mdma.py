@@ -4,5 +4,5 @@
 from emb_spy.socs.soc import SoC
 
 
-def _init_mdma(self: SoC):
+def init_mdma(self: SoC):
     assert self.__class__.__name__ == "STM32H743"

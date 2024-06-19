@@ -8,6 +8,7 @@ def report_clock_enable(
     bits_data: dict[str, StaticReader.Result],
     md_file
 ) -> None:
+    """Add "Clock reset/enabled" chapter to the report."""
     # Circular import error does not allow importing AnalyzerSTM32H743 from this module, hence this:
     assert self.__class__.__name__ == "AnalyzerSTM32H743"
 
@@ -29,7 +30,8 @@ def _report_clock_enable_d1(
         ClockResetEnableItemStm32("DMA2D", None, "RCC_AHB3ENR.DMA2DEN"),
         ClockResetEnableItemStm32("MDMA", None, "RCC_AHB3ENR.MDMAEN"),
     ]
-    self.report_clock_enable_stm32(items=items, bits_data=bits_data, md_file=md_file, title="Clock reset/enable D1")
+    self.report_clock_enable_stm32(
+        items=items, bits_data=bits_data, md_file=md_file, title="Clock reset/enabled D1")
 
 
 def _report_clock_enable_d2(
@@ -67,7 +69,8 @@ def _report_clock_enable_d2(
         ClockResetEnableItemStm32("UART7", None, "RCC_APB1LENR.UART7EN"),
         ClockResetEnableItemStm32("UART8", None, "RCC_APB1LENR.UART8EN"),
     ]
-    self.report_clock_enable_stm32(items=items, bits_data=bits_data, md_file=md_file, title="Clock reset/enable D2")
+    self.report_clock_enable_stm32(
+        items=items, bits_data=bits_data, md_file=md_file, title="Clock reset/enabled D2")
 
 
 def _report_clock_enable_d3(
@@ -93,4 +96,5 @@ def _report_clock_enable_d3(
         ClockResetEnableItemStm32("I2C4", None, "RCC_APB4ENR.I2C4EN"),
         ClockResetEnableItemStm32("LPUART1", None, "RCC_APB4ENR.LPUART1EN"),
     ]
-    self.report_clock_enable_stm32(items=items, bits_data=bits_data, md_file=md_file, title="Clock reset/enable D3")
+    self.report_clock_enable_stm32(
+        items=items, bits_data=bits_data, md_file=md_file, title="Clock reset/enabled D3")

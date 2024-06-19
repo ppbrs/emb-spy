@@ -1,10 +1,11 @@
 """Part of AnalyzerSTM32H743 class."""
+# from emb_spy import ReaderConfigMmapReg
 from emb_spy import STM32H743
 from emb_spy import ReaderConfigCoreReg
 from emb_spy import ReaderConfigCoreRegBits
-from emb_spy import ReaderConfigMmapReg
 from emb_spy import ReaderConfigMmapRegBits
 from emb_spy import StaticReader
+from emb_spy.analyzer.analyzer import ConfigType
 
 
 def get_bits_config(
@@ -14,7 +15,7 @@ def get_bits_config(
     # Circular import error does not allow importin AnalyzerSTM32H743 from this module, hence this:
     assert self.__class__.__name__ == "AnalyzerSTM32H743"
 
-    config: list[ReaderConfigMmapReg | ReaderConfigMmapRegBits | ReaderConfigCoreReg | ReaderConfigCoreRegBits] = []
+    config: ConfigType = []
     for gpio_idx in ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", ]:
         config += [ReaderConfigMmapRegBits(
             name=f"GPIO{gpio_idx}_MODER.MODER{pin_idx}") for pin_idx in range(16)]
@@ -43,9 +44,12 @@ def get_bits_config(
         "ADC3_CCR",
     ])
     mmap_reg_names.extend([
-        "ADC1_CR", "ADC1_CFGR", "ADC1_CFGR2", "ADC1_PCSEL", "ADC1_SMPR1", "ADC1_SMPR2", "ADC1_SQR1", "ADC1_SQR2", "ADC1_SQR3", "ADC1_SQR4",
-        "ADC2_CR", "ADC2_CFGR", "ADC2_CFGR2", "ADC2_PCSEL", "ADC2_SMPR1", "ADC2_SMPR2", "ADC2_SQR1", "ADC2_SQR2", "ADC2_SQR3", "ADC2_SQR4",
-        "ADC3_CR", "ADC3_CFGR", "ADC3_CFGR2", "ADC3_PCSEL", "ADC3_SMPR1", "ADC3_SMPR2", "ADC3_SQR1", "ADC3_SQR2", "ADC3_SQR3", "ADC3_SQR4",
+        "ADC1_CR", "ADC1_CFGR", "ADC1_CFGR2", "ADC1_PCSEL", "ADC1_SMPR1", "ADC1_SMPR2",
+        "ADC1_SQR1", "ADC1_SQR2", "ADC1_SQR3", "ADC1_SQR4",
+        "ADC2_CR", "ADC2_CFGR", "ADC2_CFGR2", "ADC2_PCSEL", "ADC2_SMPR1", "ADC2_SMPR2",
+        "ADC2_SQR1", "ADC2_SQR2", "ADC2_SQR3", "ADC2_SQR4",
+        "ADC3_CR", "ADC3_CFGR", "ADC3_CFGR2", "ADC3_PCSEL", "ADC3_SMPR1", "ADC3_SMPR2",
+        "ADC3_SQR1", "ADC3_SQR2", "ADC3_SQR3", "ADC3_SQR4",
     ])
     mmap_reg_names.extend([
         f"DMAMUX{dma_mux_idx}_C{ch_idx}CR"
@@ -96,7 +100,7 @@ def get_bits_config(
         "RCC_APB4ENR", "RCC_APB4RSTR",
     ])
     mmap_reg_names.extend([
-        "SCB_SCR",
+        "SCB_CCR",
         "CLIDR", "CTR", "CCSIDR", "CSSELR",
     ])
 
@@ -126,11 +130,13 @@ def get_bits_config(
     for mmap_reg_name in mmap_reg_names:
         mmap_reg = map_name[mmap_reg_name]
         for bits in mmap_reg.bits:
-            config.append(ReaderConfigMmapRegBits(name=(mmap_reg.name + "." + bits.name)))
+            name = mmap_reg.name + "." + bits.name
+            config.append(ReaderConfigMmapRegBits(name=name))
 
     for core_reg_name in core_reg_names:
         core_reg = map_name[core_reg_name]
         for bits in core_reg.bits:
-            config.append(ReaderConfigCoreRegBits(name=(core_reg.name + "." + bits.name)))
+            name = core_reg.name + "." + bits.name
+            config.append(ReaderConfigCoreRegBits(name=name))
 
     return config

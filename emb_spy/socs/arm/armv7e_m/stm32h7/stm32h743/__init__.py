@@ -1,24 +1,24 @@
 """Module for STM32H743 SoC."""
 from emb_spy.socs.arm.armv7e_m import ARMV7EM
-from emb_spy.socs.arm.stm32._gpio import _init_gpio
+from emb_spy.socs.arm.stm32._gpio import init_gpio
 from emb_spy.socs.arm.stm32._tim1_tim8 import init_tim1_tim8
 from emb_spy.socs.bits import Bits
 from emb_spy.socs.reg import MmapReg
 from emb_spy.socs.soc import SoC
 
-from ._adc import _init_adc
-from ._bdma import _init_bdma
-from ._dma import _init_dma
-from ._dma_mux import _init_dma_mux
-from ._i2c import _init_i2c
-from ._mdma import _init_mdma
-from ._pwr import _init_pwr
+from ._adc import init_adc
+from ._bdma import init_bdma
+from ._dma import init_dma
+from ._dma_mux import init_dma_mux
+from ._i2c import init_i2c
+from ._mdma import init_mdma
+from ._pwr import init_pwr
 from ._quadspi import init_quadspi
-from ._rcc import _init_rcc
-from ._syscfg import _init_syscfg
-from ._system_flash import _init_system_flash
-from ._tim2_tim3_tim4_tim5 import _init_tim2_tim3_tim4_tim5
-from ._hrtim import _init_hrtim
+from ._rcc import init_rcc
+from ._syscfg import init_syscfg
+from ._system_flash import init_system_flash
+from ._tim2_tim3_tim4_tim5 import init_tim2_tim3_tim4_tim5
+from ._hrtim import init_hrtim
 
 
 class STM32H743(SoC):
@@ -47,21 +47,21 @@ class STM32H743(SoC):
         """Generate all Register objects."""
         super().__init__()
         self += ARMV7EM().regs
-        _init_adc(self)
-        _init_bdma(self)
-        _init_dma(self)
-        _init_dma_mux(self)
-        _init_hrtim(self)
-        _init_i2c(self)
-        _init_mdma(self)
-        _init_pwr(self)
+        init_adc(self)
+        init_bdma(self)
+        init_dma(self)
+        init_dma_mux(self)
+        init_hrtim(self)
+        init_i2c(self)
+        init_mdma(self)
+        init_pwr(self)
         init_quadspi(self)
-        _init_rcc(self)
-        _init_syscfg(self)
-        _init_system_flash(self)
+        init_rcc(self)
+        init_syscfg(self)
+        init_system_flash(self)
         init_tim1_tim8(self, prefix="TIM1", base=self.TIM1_BASE)
         init_tim1_tim8(self, prefix="TIM8", base=self.TIM8_BASE)
-        _init_tim2_tim3_tim4_tim5(self)
+        init_tim2_tim3_tim4_tim5(self)
         self._init_flash()
         self._init_gpio()
 
@@ -84,14 +84,14 @@ class STM32H743(SoC):
         ]
 
     def _init_gpio(self):
-        _init_gpio(self, prefix="GPIOA", base=self.GPIOA_BASE)
-        _init_gpio(self, prefix="GPIOB", base=self.GPIOB_BASE)
-        _init_gpio(self, prefix="GPIOC", base=self.GPIOC_BASE)
-        _init_gpio(self, prefix="GPIOD", base=self.GPIOD_BASE)
-        _init_gpio(self, prefix="GPIOE", base=self.GPIOE_BASE)
-        _init_gpio(self, prefix="GPIOF", base=self.GPIOF_BASE)
-        _init_gpio(self, prefix="GPIOG", base=self.GPIOG_BASE)
-        _init_gpio(self, prefix="GPIOH", base=self.GPIOH_BASE)
-        _init_gpio(self, prefix="GPIOI", base=self.GPIOI_BASE)
-        _init_gpio(self, prefix="GPIOJ", base=self.GPIOJ_BASE)
-        _init_gpio(self, prefix="GPIOK", base=self.GPIOK_BASE)
+        init_gpio(self, prefix="GPIOA", base=self.GPIOA_BASE)
+        init_gpio(self, prefix="GPIOB", base=self.GPIOB_BASE)
+        init_gpio(self, prefix="GPIOC", base=self.GPIOC_BASE)
+        init_gpio(self, prefix="GPIOD", base=self.GPIOD_BASE)
+        init_gpio(self, prefix="GPIOE", base=self.GPIOE_BASE)
+        init_gpio(self, prefix="GPIOF", base=self.GPIOF_BASE)
+        init_gpio(self, prefix="GPIOG", base=self.GPIOG_BASE)
+        init_gpio(self, prefix="GPIOH", base=self.GPIOH_BASE)
+        init_gpio(self, prefix="GPIOI", base=self.GPIOI_BASE)
+        init_gpio(self, prefix="GPIOJ", base=self.GPIOJ_BASE)
+        init_gpio(self, prefix="GPIOK", base=self.GPIOK_BASE)

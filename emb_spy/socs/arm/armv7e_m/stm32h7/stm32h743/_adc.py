@@ -7,7 +7,7 @@ ADC12_BASE = 0x40022000
 ADC3_BASE = 0x58026000
 
 
-def _init_adc(self: SoC) -> None:
+def init_adc(self: SoC) -> None:
     assert self.__class__.__name__ == "STM32H743"
 
     _init_common(self)

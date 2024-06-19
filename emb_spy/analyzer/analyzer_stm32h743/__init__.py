@@ -53,14 +53,15 @@ class AnalyzerSTM32H743(Analyzer):
         self.state.is_rev_v = bits_data["DBGMCU_IDC.REV_ID"].val == 0x2003
 
         self.report_environment(md_file)
-        self.report_general(bits_data, md_file)
+        self._report_general(bits_data, md_file)
 
         report_clock(self, bits_data, md_file)
         self.report_systick_stm32(bits_data, md_file)
         self.report_core_armv7e_m(bits_data, md_file)
         self.report_mpu_armv7e_m(bits_data, md_file)
         report_adc(self, bits_data, md_file)
-        self.report_gpio_stm32(bits_data, md_file, port_list=["A", "B", "F", ], af_descr_getter=get_af_descr)
+        self.report_gpio_stm32(
+            bits_data, md_file, port_list=["A", "B", "F", ], af_descr_getter=get_af_descr)
         report_advanced_control_timers(self, bits_data, md_file)
         report_hrtim(self, bits_data, md_file)
         report_dma(self, bits_data, md_file)
@@ -70,7 +71,7 @@ class AnalyzerSTM32H743(Analyzer):
 
         pprint.PrettyPrinter(indent=4, width=40,).pprint(self.state)
 
-    def report_general(
+    def _report_general(
         self,
         bits_data: dict[str, StaticReader.Result],
         md_file

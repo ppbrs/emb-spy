@@ -3,7 +3,6 @@ import dataclasses
 
 from emb_spy.analyzer.analyzer import State
 
-
 Frequency = int | float | None
 """
 Frequency type.

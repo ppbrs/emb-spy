@@ -4,7 +4,7 @@ from emb_spy.socs.reg import MmapReg
 from emb_spy.socs.soc import SoC
 
 
-def _init_hrtim(self: SoC) -> None:
+def init_hrtim(self: SoC) -> None:
     assert self.__class__.__name__ == "STM32H743"
 
     base = 0x40017400
@@ -24,6 +24,3 @@ def _init_hrtim(self: SoC) -> None:
             # 110: fCOUNTER = fHRTIM / 2
             # 111: fCOUNTER = fHRTIM / 4
         ]))
-
-
-

@@ -123,8 +123,8 @@ def report_core_armv7e_m(
 
     md_file.new_line("***")
 
-    icache_ena = bits_data["SCB_SCR.IC"].val
-    dcache_ena = bits_data["SCB_SCR.DC"].val
+    icache_ena = bits_data["SCB_CCR.IC"].val
+    dcache_ena = bits_data["SCB_CCR.DC"].val
     md_file.new_line("* I-Cache " + ("enabled" if icache_ena else "disabled"))
     md_file.new_line("* D-Cache " + ("enabled" if dcache_ena else "disabled"))
 

@@ -7,6 +7,7 @@ import logging
 import pathlib
 from datetime import datetime
 
+from emb_spy.analyzer.analyzer._read_bits import ConfigType
 from emb_spy.analyzer.analyzer._read_bits import read_bits
 from emb_spy.analyzer.analyzer._report_clock_enable_stm32 import ClockResetEnableItemStm32
 from emb_spy.analyzer.analyzer._report_clock_enable_stm32 import report_clock_enable_stm32
@@ -17,7 +18,9 @@ from emb_spy.analyzer.analyzer._report_mpu_arm import report_mpu_armv7e_m
 from emb_spy.analyzer.analyzer._report_nvic_stm32 import report_nvic_stm32
 from emb_spy.analyzer.analyzer._report_systick_stm32 import report_systick_stm32
 
-_ = ClockResetEnableItemStm32  # this is a public type
+# Public types:
+_ = ClockResetEnableItemStm32
+_ = ConfigType
 
 
 @dataclasses.dataclass

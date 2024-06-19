@@ -7,6 +7,7 @@ def report_quadspi(
     bits_data: dict[str, StaticReader.Result],
     md_file
 ) -> None:
+    """Add "QUADSPI" chapter to the report."""
     # Circular import error does not allow importin AnalyzerSTM32H743 from this module, hence this:
     assert self.__class__.__name__ == "AnalyzerSTM32H743"
 
@@ -29,10 +30,13 @@ def report_quadspi(
 
     div = bits_data["QUADSPI_CR.PRESCALER"].val + 1
     clk_freq = self.state.quadspi_ker_freq / div
-    md_file.new_line(f"* QUADSPI CLK frequency = {self.state.quadspi_ker_freq / 1e6} MHz / {div} = {clk_freq / 1e6} MHz.")
+    md_file.new_line(
+        "* QUADSPI CLK frequency = "
+        f"{self.state.quadspi_ker_freq / 1e6} MHz / {div} = {clk_freq / 1e6} MHz.")
 
     fsize = bits_data["QUADSPI_DCR.FSIZE"].val
     fsize_bytes = 2**(fsize + 1)
-    md_file.new_line(f"* size = 2^({fsize}+1) = {fsize_bytes} B = {round(fsize_bytes / 1024 / 1024, 1)} MB")
+    md_file.new_line(
+        f"* size = 2^({fsize}+1) = {fsize_bytes} B = {round(fsize_bytes / 1024 / 1024, 1)} MB")
 
     md_file.new_line("***")

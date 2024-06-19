@@ -4,7 +4,7 @@ from emb_spy.socs.arm.armv6_m.stm32f0.stm32f051._rcc import init_rcc
 from emb_spy.socs.arm.armv6_m.stm32f0.stm32f051._tim2_tim3 import \
     init_tim2_tim3
 from emb_spy.socs.arm.armv6_m.stm32f0.stm32f051._usart import init_usart
-from emb_spy.socs.arm.stm32._gpio import _init_gpio
+from emb_spy.socs.arm.stm32._gpio import init_gpio
 from emb_spy.socs.arm.stm32._tim1_tim8 import init_tim1_tim8
 from emb_spy.socs.soc import SoC
 
@@ -69,8 +69,8 @@ class STM32F051(SoC):
         init_usart(self)
 
     def _init_gpio(self) -> None:
-        _init_gpio(self, prefix="GPIOA", base=self.GPIOA_BASE)
-        _init_gpio(self, prefix="GPIOB", base=self.GPIOB_BASE)
-        _init_gpio(self, prefix="GPIOC", base=self.GPIOC_BASE)
-        _init_gpio(self, prefix="GPIOD", base=self.GPIOD_BASE)
-        _init_gpio(self, prefix="GPIOF", base=self.GPIOF_BASE)
+        init_gpio(self, prefix="GPIOA", base=self.GPIOA_BASE)
+        init_gpio(self, prefix="GPIOB", base=self.GPIOB_BASE)
+        init_gpio(self, prefix="GPIOC", base=self.GPIOC_BASE)
+        init_gpio(self, prefix="GPIOD", base=self.GPIOD_BASE)
+        init_gpio(self, prefix="GPIOF", base=self.GPIOF_BASE)

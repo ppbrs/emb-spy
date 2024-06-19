@@ -9,6 +9,7 @@ def report_dma(
     bits_data: dict[str, StaticReader.Result],
     md_file
 ) -> None:
+    """Add "DMA" chapter to the report."""
     # Circular import error does not allow importing AnalyzerSTM32H743 from this module, hence this:
     assert self.__class__.__name__ == "AnalyzerSTM32H743"
     print(f"{type(md_file)=}")

@@ -4,7 +4,7 @@ from emb_spy.socs.reg import MmapReg
 from emb_spy.socs.soc import SoC
 
 
-def _init_bdma(self: SoC):
+def init_bdma(self: SoC):
     assert self.__class__.__name__ == "STM32H743"
 
     base = 0x58025400
