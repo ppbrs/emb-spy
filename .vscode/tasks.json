@@ -2,6 +2,38 @@
 	"version": "2.0.0",
 	"tasks": [
 		// -----------------------------------------------------------------------------------------
+		// analyzers
+		// -----------------------------------------------------------------------------------------
+		{
+			"label": "Run STM32F051 Analyzer.",
+			"type": "shell",
+			"command": "clear && python3 stm32f051_analyzer.py",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/templates"
+			},
+		},
+		{
+			"label": "Run STM32F745 Analyzer.",
+			"type": "shell",
+			"command": "clear && python3 stm32f745_analyzer.py",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/templates"
+			},
+		},
+		{
+			"label": "Run STM32H743 Analyzer.",
+			"type": "shell",
+			"command": "clear && python3 stm32h743_analyzer.py",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/templates"
+			},
+		},
+		// -----------------------------------------------------------------------------------------
+		// python
+		// -----------------------------------------------------------------------------------------
 		{
 			"label": "python3: Run this script locally.",
 			"type": "shell",
