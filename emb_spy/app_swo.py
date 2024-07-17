@@ -102,6 +102,7 @@ class AppSwo:
         """
         The format of timestamps in output files.
         """
+
         RELATIVE = enum.auto()
         """In milliseconds elapsed since the start of capturing."""
         ABSOLUTE = enum.auto()
@@ -119,7 +120,7 @@ class AppSwo:
                  ) -> None:
         self.logger_suffix = logger_suffix if logger_suffix is not None else ""
         self.logger = logging.getLogger(self.__class__.__name__ + self.logger_suffix)
-        self.port = Backend.find_openocd_port() if port is None else port
+        self.port = Backend.find_openocd_telnet_port() if port is None else port
         self.host = host
         self.parser = _AppSwoParser(out_path_base=out_path_base, tsformat=tsformat)
         self.traceclkin_freq = traceclkin_freq
@@ -144,7 +145,6 @@ class AppSwo:
 
     def collect(self, timeout) -> None:
         """Capture and parse bytes from SWO, save raw and human-readable result to files."""
-
         self.logger.debug("Connecting to TCP server: %s:%d", self.host, self.port + 10)
         cli_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         cli_sock.connect((self.host, self.port + 10))

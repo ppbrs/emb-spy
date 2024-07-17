@@ -148,6 +148,8 @@ class Backend:
         * ">", which is the prompt for the following request.
         If there are issues, the response can consist of several lines.
         """
+        _ = self.tlnt.read_very_eager()  # Read and discard any available data.
+
         t_write = time.monotonic()
         self.tlnt.write((cmd + "\n").encode("ascii"))
         self.logger.debug("tx=%s", cmd)
