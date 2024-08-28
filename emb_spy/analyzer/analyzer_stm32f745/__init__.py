@@ -24,9 +24,10 @@ class AnalyzerSTM32F745(Analyzer):
         self,
         board_cfg: Analyzer.BoardConfig,
         report_file_path: pathlib.PosixPath | None = None,
+        server: tuple[str, int] | None = None,
     ) -> None:
         """Prepare the analyzer."""
-        super().__init__(board_cfg=board_cfg, report_file_path=report_file_path)
+        super().__init__(board_cfg=board_cfg, report_file_path=report_file_path, server=server)
         self.state = StateSTM32F745()
 
     def run(

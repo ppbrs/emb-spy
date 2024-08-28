@@ -190,11 +190,13 @@ class Backend:
             #   > mdw 0xe000ed04 1
             #   0xe000ed04: 0010000a
             cmd = (f"mdw 0x{addr:x} 1\n").encode("ascii")
-        elif isinstance(addr, str):
-            # Read a special core register. Example:
-            #   > reg lr
-            #   lr (/32): 0x080000d9
-            cmd = (f"reg {addr}\n").encode("ascii")
+        # elif isinstance(addr, str):
+        #     # Read a special core register. Example:
+        #     #   > reg lr
+        #     #   lr (/32): 0x080000d9
+        #     cmd = (f"reg {addr}\n").encode("ascii")
+        else:
+            assert False, "FIXME"
         self.logger.debug("tx=%s", cmd)
 
         self.tlnt.write(cmd)

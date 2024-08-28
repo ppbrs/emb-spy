@@ -26,18 +26,17 @@ def read_bits(
     assert "Analyzer" in [cls.__name__ for cls in inspect.getmro(self.__class__)]
     # which is basically the same as issublass(self.__class__, Analyzer).
 
-    port = Backend.find_openocd_telnet_port()
     results: dict[str, ReaderStatic.Result] = ReaderStatic(
         config=config,
-        port=port,
+        host=self.server[0],
+        port=self.server[1],
         soc=soc,
         target_name=self.board_cfg.jtag_target_name,
         restart_if_not_running=False,
         halt_if_running=False,
     ).read()
 
-    port = Backend.find_openocd_telnet_port()
-    with Backend(port=port, target_name=None) as backend:
+    with Backend(host=self.server[0], port=self.server[1], target_name=None) as backend:
         self.state.target_name, self.state.target_state = backend.get_current_target_state()
 
     for name, result in results.items():

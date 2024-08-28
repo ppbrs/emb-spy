@@ -7,6 +7,7 @@ import logging
 import pathlib
 from datetime import datetime
 
+from emb_spy import Backend
 from emb_spy.analyzer.analyzer._read_bits import ConfigType
 from emb_spy.analyzer.analyzer._read_bits import read_bits
 from emb_spy.analyzer.analyzer._report_clock_enable_stm32 import ClockResetEnableItemStm32
@@ -45,13 +46,15 @@ class Analyzer(abc.ABC):
     def __init__(
         self,
         board_cfg: Analyzer.BoardConfig,
-        report_file_path: pathlib.PosixPath
+        report_file_path: pathlib.PosixPath,
+        server: tuple[str, int] | None = None,
     ) -> None:
         """Prepare the analyzer."""
         if report_file_path.exists():
             logging.warning("`%s` report file already exists", report_file_path)
         self.report_file_path = report_file_path
         self.board_cfg = board_cfg
+        self.server = ("localhost", Backend.find_openocd_telnet_port()) if server is None else server
 
     @dataclasses.dataclass
     class BoardConfig:
