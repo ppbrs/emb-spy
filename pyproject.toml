@@ -52,3 +52,12 @@ wrap_length = 100
 # Personally, I find this option the best. It allows faster debugging and leaving comments
 # for a particular import.
 force_single_line = "True"
+
+#
+# PYTEST configuration
+#
+[tool.pytest.ini_options]
+log_cli = "True"
+log_cli_level = "DEBUG"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+log_cli_format = "%(asctime)s %(levelname)s %(message)s"

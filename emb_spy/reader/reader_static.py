@@ -30,8 +30,8 @@ class ReaderStatic(_Reader):
         """
         self.logger.debug("App called.")
 
-        print("mem_map", self.mem_map)
-        print("core_map", self.core_map)
+        self.logger.debug("mem_map before: %s", self.mem_map)
+        self.logger.debug("core_map before: %s", self.core_map)
 
         with Backend(
             host=self.host,
@@ -56,8 +56,8 @@ class ReaderStatic(_Reader):
                 assert isinstance(mem_data, bytes)
                 self.core_map[core_reg_name] = mem_data
 
-        print("mem_map", self.mem_map)
-        print("core_map", self.core_map)
+        self.logger.debug("mem_map after: %s", self.mem_map)
+        self.logger.debug("core_map after: %s", self.core_map)
 
         results: dict[str, ReaderStatic.Result] = {}
 

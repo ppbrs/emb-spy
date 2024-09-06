@@ -2,17 +2,17 @@
 import itertools
 
 from emb_spy import ReaderStatic
+from mdutils import MdUtils  # type: ignore
 
 
 def report_dma(
     self,  # : AnalyzerSTM32H743
     bits_data: dict[str, ReaderStatic.Result],
-    md_file
+    md_file: MdUtils,
 ) -> None:
     """Add "DMA" chapter to the report."""
     # Circular import error does not allow importing AnalyzerSTM32H743 from this module, hence this:
     assert self.__class__.__name__ == "AnalyzerSTM32H743"
-    print(f"{type(md_file)=}")
 
     md_file.new_header(level=1, title="DMA")
 

@@ -64,6 +64,7 @@ def get_bits_config(
         "TIM1_CR1", "TIM1_ARR",
         "TIM8_CR1", "TIM8_ARR",
         "SYS_FLASH_SIZE",
+        "SYS_UID0", "SYS_UID1", "SYS_UID2",
         "SYSCFG_PMCR", "SYSCFG_PKGR",
         "HRTIM_MCR",
         "SYST_CSR", "SYST_RVR", "SYST_CVR", "SYST_CALIB",

@@ -137,7 +137,11 @@ class Backend:
         if exc_type is not None:
             self.logger.error("%s: %s", exc_type.__name__, exc_value)
 
-    def request(self, cmd: str, timeout: float = 2.0) -> list[str]:
+    def request(
+        self,
+        cmd: str,
+        timeout: float = 2.0
+    ) -> list[str]:
         """
         Send a command and wait for an answer; return the list of lines except the first,
         which is the request echo, and the last, which is a prompt.
@@ -152,8 +156,11 @@ class Backend:
 
         t_write = time.monotonic()
         self.tlnt.write((cmd + "\n").encode("ascii"))
-        self.logger.debug("tx=%s", cmd)
+        self.logger.debug("tx=\"%s\"", cmd)
 
+        # TODO: Rework this block. It should read in small time periods and then combine bytes.
+        # This way it is more comfortable for human users to see what's going on
+        # during long requests such as "program" that may take up to a minute.
         r_bytes = self.tlnt.read_until(b">", timeout=timeout)
         r_chars = r_bytes.decode("ascii")
         r_lines = r_chars.replace("\r", "\n").split("\n")

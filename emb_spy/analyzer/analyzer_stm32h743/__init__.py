@@ -96,4 +96,9 @@ class AnalyzerSTM32H743(Analyzer):
             0b1000: "LQFP208/TFBGA240", }[bits_data["SYSCFG_PKGR.PKG"].val]
         md_file.new_line(f"Package = {package}.")
 
+        uid0 = bits_data["SYS_UID0.UID0"].val
+        uid1 = bits_data["SYS_UID1.UID1"].val
+        uid2 = bits_data["SYS_UID2.UID2"].val
+        md_file.new_line(f"UID = {uid2:08x} {uid1:08x} {uid0:08x}")
+
         md_file.new_line("***")

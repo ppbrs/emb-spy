@@ -1,5 +1,6 @@
 """Part of AnalyzerSTM32H743 class."""
 import inspect
+import logging
 
 from emb_spy import Backend
 from emb_spy import ReaderConfigCoreReg
@@ -36,10 +37,15 @@ def read_bits(
         halt_if_running=False,
     ).read()
 
-    with Backend(host=self.server[0], port=self.server[1], target_name=None) as backend:
+    with Backend(
+        host=self.server[0],
+        port=self.server[1],
+        target_name=self.board_cfg.jtag_target_name,
+    ) as backend:
         self.state.target_name, self.state.target_state = backend.get_current_target_state()
 
+    logger = logging.getLogger("Analyzer")
     for name, result in results.items():
-        print(f"{name}: {result.val}, raw(le)={result.raw[::-1].hex()}")
+        logger.info("%s: %s, raw(le)=%s", name, result.val, result.raw[::-1].hex())
 
     return results
