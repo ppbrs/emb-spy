@@ -152,21 +152,55 @@ class Backend:
         * ">", which is the prompt for the following request.
         If there are issues, the response can consist of several lines.
         """
-        _ = self.tlnt.read_very_eager()  # Read and discard any available data.
+        #
+        # Read and discard any available data.
+        #
+        _ = self.tlnt.read_very_eager()
 
+        #
+        # Send request.
+        #
         t_write = time.monotonic()
         self.tlnt.write((cmd + "\n").encode("ascii"))
         self.logger.debug("tx=\"%s\"", cmd)
 
-        # TODO: Rework this block. It should read in small time periods and then combine bytes.
-        # This way it is more comfortable for human users to see what's going on
-        # during long requests such as "program" that may take up to a minute.
-        r_bytes = self.tlnt.read_until(b">", timeout=timeout)
-        r_chars = r_bytes.decode("ascii")
-        r_lines = r_chars.replace("\r", "\n").split("\n")
-        r_lines = [r_line for r_line in r_lines if r_line != ""]
-        for r_line in r_lines:
-            self.logger.debug("rx=\"%s\", Δt=%fs", r_line, time.monotonic() - t_write)
+        #
+        # Collect and show replies.
+        #
+        r_chars = ""
+        # The very first received line is echo, so we don't bother showing it.
+        r_last_reported_line = 0
+        while True:
+            r_bytes = self.tlnt.read_eager()
+            r_chars += r_bytes.decode("ascii")
+
+            # Some requests may be quite long; for example, "program" that may take up to a minute.
+            # It is more comfortable for human users to see response lines in real time,
+            # not after the final ">" is received.
+            r_lines = [r_line for r_line in r_chars.replace("\r", "\n").split("\n") if r_line != ""]
+            if r_last_reported_line < len(r_lines) - 1:
+                for i in range(r_last_reported_line + 1, len(r_lines)):
+                    if ">" not in (r_line := r_lines[i]):
+                        self.logger.debug(
+                            "Δt=%2.03fs: rx=\"%s\", ", time.monotonic() - t_write, r_line)
+                r_last_reported_line = len(r_lines) - 1
+
+            if b">" in r_bytes:
+                break
+            if time.monotonic() > (t_write + timeout):
+                self.logger.warning("Δt=%2.03fs: rx timeout", time.monotonic() - t_write)
+                break
+
+        r_chars = r_chars.rstrip()
+        r_lines = [r_line for r_line in r_chars.replace("\r", "\n").split("\n") if r_line != ""]
+
+        # r_bytes = self.tlnt.read_until(b">", timeout=timeout)
+        # r_chars = r_bytes.decode("ascii")
+        # r_lines = [r_line for r_line in r_chars.replace("\r", "\n").split("\n") if r_line != ""]
+        # for r_line in r_lines:
+        #     self.logger.debug("Δt=%2.03fs: rx=\"%s\", ", time.monotonic() - t_write, r_line)
+
+        # Analyze replies.
         assert r_lines[0].strip() == cmd, \
             f"{cmd}: Expected to receive the echo (`{cmd}`) but got `{r_lines[0].strip()}`"
         if r_lines[-1] != ">":
