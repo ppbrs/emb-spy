@@ -108,6 +108,10 @@ def get_bits_config(
         "CLIDR", "CTR", "CCSIDR", "CSSELR",
     ])
 
+    mmap_reg_names.extend([
+        "DWT_PCSR",
+    ])
+
     # Core
     config.extend([ReaderConfigCoreReg(f"R{i}") for i in range(13)])
     config.append(ReaderConfigCoreReg("SP"))

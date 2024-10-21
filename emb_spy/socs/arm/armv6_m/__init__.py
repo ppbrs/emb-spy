@@ -1,4 +1,5 @@
 """Module for ARM-v6-m core SoC."""
+from emb_spy.socs.arm.armv6_m._debug import init_debug
 from emb_spy.socs.arm.armv6_m._nvic import init_nvic
 from emb_spy.socs.arm.armv6_m._scb import init_scb
 from emb_spy.socs.arm.armv6_m._systick import init_systick
@@ -14,6 +15,7 @@ class ARMV6M(SoC):
         """Generate all Register objects."""
         super().__init__()
         self.init_core_registers()
+        init_debug(self)
         init_nvic(self)
         init_scb(self)
         init_systick(self)

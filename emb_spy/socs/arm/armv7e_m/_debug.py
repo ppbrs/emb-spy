@@ -26,6 +26,14 @@ def init_debug(self):
         ],
     ))
     # ======================================================================================
+    dwt_base = 0xE0001000
+    self.append(MmapReg(
+        name="DWT_PCSR", addr=dwt_base + 0x01C, descr="DWT program counter sample register",
+        bits=[
+            Bits(bits=range(0, 32), name="EIASAMPLE")
+        ],
+    ))
+    # ======================================================================================
     itm_base = 0xE0000000
     self.append(MmapReg(
         name="ITM_TER", addr=itm_base + 0xE00, descr="ITM trace enable register",

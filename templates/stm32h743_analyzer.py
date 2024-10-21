@@ -11,8 +11,8 @@ def main():
 
     # jtag_target_name = None
     # jtag_target_name = "stm32h7x.cpu0"
-    # jtag_target_name = "master.cpu0"
-    jtag_target_name = "solo.cpu0"
+    jtag_target_name = "master.cpu0"
+    # jtag_target_name = "solo.cpu0"
     # jtag_target_name = "axis1.cpu0"
     # jtag_target_name = "axis2.cpu0"
 

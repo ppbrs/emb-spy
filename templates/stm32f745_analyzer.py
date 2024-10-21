@@ -9,9 +9,9 @@ def main():
     """Run the analyzer."""
     logging.basicConfig(level=logging.INFO)
 
-    # jtag_target_name = "solo.cpu"
+    jtag_target_name = "solo.cpu"
     # jtag_target_name = "master.cpu"
-    jtag_target_name = "axis.cpu"
+    # jtag_target_name = "axis.cpu"
 
     board_cfg = AnalyzerSTM32F745.BoardConfig(
         jtag_target_name=jtag_target_name,

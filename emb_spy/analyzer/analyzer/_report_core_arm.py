@@ -40,6 +40,9 @@ def report_core_armv7e_m(
 
     md_file.new_header(level=1, title="Core (ARM v7e-m)")
 
+    pcsr = bits_data["DWT_PCSR.EIASAMPLE"].val
+    md_file.new_line(f"* PC from PCSR = 0x{pcsr:08x}")
+
     if self.state.target_state != "halted":
         md_file.new_line(
             f"* Core is {self.state.target_state}. Core must be halted for reading core registers.")
@@ -141,6 +144,9 @@ def report_core_armv6_m(
     # which is basically the same as issublass(self.__class__, Analyzer).
 
     md_file.new_header(level=1, title="Core (ARM v6-m)")
+
+    pcsr = bits_data["DWT_PCSR.EIASAMPLE"].val
+    md_file.new_line(f"* PC from PCSR = 0x{pcsr:08x}")
 
     if self.state.target_state != "halted":
         md_file.new_line(

@@ -60,6 +60,8 @@ def _get_bits_config(
     config.append(ReaderConfigCoreReg("PSP"))
     config.append(ReaderConfigCoreReg("MSP"))
     core_reg_names.extend(["CONTROL", "PSR"])
+    # Debug
+    mmap_reg_names.append("DWT_PCSR")
 
     soc = STM32F051()
     map_name = soc.map_name()

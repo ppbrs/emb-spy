@@ -40,6 +40,7 @@ def test_stm32h743_mmap() -> None:
         # Debug system registers
         "DBGMCU_IDC", "DBGMCU_CR",
         "DHCSR", "DCRSR", "DCRDR", "DEMCR",
+        "DWT_PCSR",
         # ------------------------------------------------------------------------------------------
         # DMA
         "DMA1_S0CR", "DMA1_S7CR", "DMA2_S0CR", "DMA2_S7CR",

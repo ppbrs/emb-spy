@@ -17,6 +17,9 @@ from .reader.reader_static import ReaderStatic  # noqa
 from .socs.arm.armv6_m.stm32f0.stm32f051 import STM32F051  # noqa
 from .socs.arm.armv7e_m.stm32f7.stm32f745 import STM32F745  # noqa
 from .socs.arm.armv7e_m.stm32h7.stm32h743 import STM32H743  # noqa
+from .pc_sampler import PCSampler
+from .elf import Elf
+from .elf import ElfSymbol
 
 # Analyzers use Backend so they should be imported after the Backend is imported.
 from .analyzer.analyzer_stm32f051 import AnalyzerSTM32F051  # noqa isort:skip

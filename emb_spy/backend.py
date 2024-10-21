@@ -220,50 +220,53 @@ class Backend:
         assert target_state in {"debug-running", "halted", "reset", "running", "unknown"}
         return target_current, target_state
 
-    def read_register(self, addr: int | str) -> int | None:
-        """
-        Read 32-bit registers
-        """
-        # TODO: check 32-bit alignment
+    # def read_register(self, addr: int | str) -> int | None:
+    #     """
+    #     Read 32-bit registers
+    #     """
+    #     # TODO: check 32-bit alignment
 
-        if isinstance(addr, int):
-            # Read a memory-mapped register. Example:
-            #   > mdw 0xe000ed04 1
-            #   0xe000ed04: 0010000a
-            cmd = (f"mdw 0x{addr:x} 1\n").encode("ascii")
-        # elif isinstance(addr, str):
-        #     # Read a special core register. Example:
-        #     #   > reg lr
-        #     #   lr (/32): 0x080000d9
-        #     cmd = (f"reg {addr}\n").encode("ascii")
-        else:
-            assert False, "FIXME"
-        self.logger.debug("tx=%s", cmd)
+    #     if isinstance(addr, int):
+    #         # Read a memory-mapped register. Example:
+    #         #   > mdw 0xe000ed04 1
+    #         #   0xe000ed04: 0010000a
+    #         cmd = (f"mdw 0x{addr:x} 1\n").encode("ascii")
+    #     # elif isinstance(addr, str):
+    #     #     # Read a special core register. Example:
+    #     #     #   > reg lr
+    #     #     #   lr (/32): 0x080000d9
+    #     #     cmd = (f"reg {addr}\n").encode("ascii")
+    #     else:
+    #         assert False, "FIXME"
+    #     self.logger.debug("tx=%s", cmd)
 
-        self.tlnt.write(cmd)
-        rdb: bytes = self.tlnt.read_until(b">", timeout=2.0)
+    #     self.tlnt.write(cmd)
+    #     rdb: bytes = self.tlnt.read_until(b">", timeout=2.0)
 
-        self.logger.debug("rx=%s", rdb)
-        tnresp = rdb.decode("ascii").split("\r\n")[1]
-        # self.logger.debug(tnresp)
-        resp_parts = tnresp.split(":")
-        assert len(resp_parts) == 2, f"Could not parse the response: `{resp_parts}`"
-        val_s = resp_parts[1].strip()
-        val = int(val_s, 16)
+    #     self.logger.debug("rx=%s", rdb)
+    #     tnresp = rdb.decode("ascii").split("\r\n")[1]
+    #     # self.logger.debug(tnresp)
+    #     resp_parts = tnresp.split(":")
+    #     assert len(resp_parts) == 2, f"Could not parse the response: `{resp_parts}`"
+    #     val_s = resp_parts[1].strip()
+    #     val = int(val_s, 16)
 
-        # Remove useless lines from the response:
-        # err_lines = [line.strip() for line in rdb.decode("ascii").split("\r\n")
-        #              if line.strip() not in ("", "\r", ">")]
-        # The string "SWD DPIDR 0x6ba02477" doesn"t help because 0x6ba02477 is just
-        # the default value of DP_DPIDR (Debug port identification register) for
-        # STM32H743/753. This may mean that the target is held at reset.
-        # Removing "connect_assert_srst" from "reset_config" in the OpenOCD configuration
-        # file may help.
-        # raise ValueError(f"Failed reading register 0x{addr:08X}: {err_lines}")
+    #     # Remove useless lines from the response:
+    #     # err_lines = [line.strip() for line in rdb.decode("ascii").split("\r\n")
+    #     #              if line.strip() not in ("", "\r", ">")]
+    #     # The string "SWD DPIDR 0x6ba02477" doesn"t help because 0x6ba02477 is just
+    #     # the default value of DP_DPIDR (Debug port identification register) for
+    #     # STM32H743/753. This may mean that the target is held at reset.
+    #     # Removing "connect_assert_srst" from "reset_config" in the OpenOCD configuration
+    #     # file may help.
+    #     # raise ValueError(f"Failed reading register 0x{addr:08X}: {err_lines}")
 
-        return val
+    #     return val
 
-    def read_core_register(self, name: str) -> bytes:
+    def read_core_register(
+        self,
+        name: str
+    ) -> bytes:
         """
         Read a special core register.
 
@@ -290,7 +293,11 @@ class Backend:
         assert len(val_str.split(" ")) == 1, f"More than 1 value in the response line: {val_str}"
         return int(val_str, 16).to_bytes(length=4, byteorder="little", signed=False)
 
-    def read_raw_memory(self, addr: int, size: int) -> bytes:
+    def read_raw_memory(
+        self,
+        addr: int,
+        size: int
+    ) -> bytes:
         """
 
         Exchange example:
@@ -342,82 +349,82 @@ class Backend:
 
         return data
 
-    def read_memory(self, addr: int, ctype=ctypes.c_uint32) -> int:
-        """
-        Read a memory cell.
-        """
-        if ctype in {ctypes.c_int8, ctypes.c_uint8}:
-            tncmd = (f"mdb 0x{addr:x} 1\n").encode("ascii")
-            response_size = 8  # Size (bits) of individual parts of a response string
-        elif ctype in {ctypes.c_int16, ctypes.c_uint16}:
-            tncmd = (f"mdh 0x{addr:x} 1\n").encode("ascii")
-            response_size = 16
-        elif ctype in {ctypes.c_int32, ctypes.c_uint32}:
-            tncmd = (f"mdw 0x{addr:x} 1\n").encode("ascii")
-            response_size = 32
-        elif ctype in {ctypes.c_int64, ctypes.c_uint64}:
-            # tncmd = (f"mdd 0x{addr:x} 1\n").encode("ascii")
-            tncmd = (f"mdw 0x{addr:x} 2\n").encode("ascii")
-            response_size = 32
-            # Example of a response: "0x24000740: 008c39df 00000000"
-        else:
-            raise NotImplementedError(f"{ctype}")
-        self.tlnt.write(tncmd)
-        rdb: bytes = self.tlnt.read_until(b">", timeout=2.0)
+    # def read_memory(self, addr: int, ctype=ctypes.c_uint32) -> int:
+    #     """
+    #     Read a memory cell.
+    #     """
+    #     if ctype in {ctypes.c_int8, ctypes.c_uint8}:
+    #         tncmd = (f"mdb 0x{addr:x} 1\n").encode("ascii")
+    #         response_size = 8  # Size (bits) of individual parts of a response string
+    #     elif ctype in {ctypes.c_int16, ctypes.c_uint16}:
+    #         tncmd = (f"mdh 0x{addr:x} 1\n").encode("ascii")
+    #         response_size = 16
+    #     elif ctype in {ctypes.c_int32, ctypes.c_uint32}:
+    #         tncmd = (f"mdw 0x{addr:x} 1\n").encode("ascii")
+    #         response_size = 32
+    #     elif ctype in {ctypes.c_int64, ctypes.c_uint64}:
+    #         # tncmd = (f"mdd 0x{addr:x} 1\n").encode("ascii")
+    #         tncmd = (f"mdw 0x{addr:x} 2\n").encode("ascii")
+    #         response_size = 32
+    #         # Example of a response: "0x24000740: 008c39df 00000000"
+    #     else:
+    #         raise NotImplementedError(f"{ctype}")
+    #     self.tlnt.write(tncmd)
+    #     rdb: bytes = self.tlnt.read_until(b">", timeout=2.0)
 
-        self.logger.debug(rdb)
-        tnresp = rdb.decode("ascii").split("\r\n")[1]
-        self.logger.debug(tnresp)
-        resp_parts = tnresp.split(":")
-        assert len(resp_parts) == 2, f"Could not parse the response: `{resp_parts}`"
-        val_s = resp_parts[1].strip().split(" ")
-        val = 0
-        for i in range(len(val_s)):
-            val += int(val_s[i], 16) * 2**(i * response_size)
+    #     self.logger.debug(rdb)
+    #     tnresp = rdb.decode("ascii").split("\r\n")[1]
+    #     self.logger.debug(tnresp)
+    #     resp_parts = tnresp.split(":")
+    #     assert len(resp_parts) == 2, f"Could not parse the response: `{resp_parts}`"
+    #     val_s = resp_parts[1].strip().split(" ")
+    #     val = 0
+    #     for i in range(len(val_s)):
+    #         val += int(val_s[i], 16) * 2**(i * response_size)
 
-        if ctype == ctypes.c_int8 and val >= 0x80:
-            val = val - 2**8
-        elif ctype == ctypes.c_int16 and val >= 0x8000:
-            val = val - 2**16
-        elif ctype == ctypes.c_int32 and val >= 0x80000000:
-            val = val - 2**32
-        elif ctype == ctypes.c_int64 and val >= 0x8000000000000000:
-            val = val - 2**64
+    #     if ctype == ctypes.c_int8 and val >= 0x80:
+    #         val = val - 2**8
+    #     elif ctype == ctypes.c_int16 and val >= 0x8000:
+    #         val = val - 2**16
+    #     elif ctype == ctypes.c_int32 and val >= 0x80000000:
+    #         val = val - 2**32
+    #     elif ctype == ctypes.c_int64 and val >= 0x8000000000000000:
+    #         val = val - 2**64
 
-        return val
+    #     return val
 
-    def read_registers(self, addrs: list[int]) -> dict[int, int]:
-        """
-        Read multiple 32-bit registers.
-        """
-        # TODO: check 32-bit alignment
-        addrs = list(addrs)
-        reg_vals = {addr: None for addr in addrs}
-        for addr in addrs:
-            reg_vals[addr] = self.read_register(addr)
-        return reg_vals
+    # def read_registers(self, addrs: list[int]) -> dict[int, int]:
+    #     """
+    #     Read multiple 32-bit registers.
+    #     """
+    #     # TODO: check 32-bit alignment
+    #     addrs = list(addrs)
+    #     reg_vals = {addr: None for addr in addrs}
+    #     for addr in addrs:
+    #         reg_vals[addr] = self.read_register(addr)
+    #     return reg_vals
 
-    def write_register(self, addr: int, val: int) -> None:
-        """ Write a value to a register.
-        """
-        tncmd = (f"mww {addr} {val}\n").encode("ascii")
+    # def write_register(self, addr: int, val: int) -> None:
+    #     """ Write a value to a register.
+    #     """
+    #     tncmd = (f"mww {addr} {val}\n").encode("ascii")
 
-        self.tlnt.write(tncmd)
-        _ = self.tlnt.read_until(b">", timeout=2.0).decode("ascii")
+    #     self.tlnt.write(tncmd)
+    #     _ = self.tlnt.read_until(b">", timeout=2.0).decode("ascii")
 
-    def write_memory(self, addr: int, val: int, ctype=ctypes.c_uint32) -> None:
-        """
-        Write a memory cell.
-        """
-        if ctype in {ctypes.c_int8, ctypes.c_uint8}:
-            tncmd = (f"mwb {addr} {val}\n").encode("ascii")
-        elif ctype in {ctypes.c_int16, ctypes.c_uint16}:
-            tncmd = (f"mwh {addr} {val}\n").encode("ascii")
-        elif ctype in {ctypes.c_int32, ctypes.c_uint32}:
-            tncmd = (f"mww {addr} {val}\n").encode("ascii")
-        elif ctype in {ctypes.c_int64, ctypes.c_uint64}:
-            tncmd = (f"mwd {addr} {val}\n").encode("ascii")
-        else:
-            raise NotImplementedError(f"{ctype}")
-        self.tlnt.write(tncmd)
-        _ = self.tlnt.read_until(b">", timeout=2.0).decode("ascii")
+    # def write_memory(self, addr: int, val: int, ctype=ctypes.c_uint32) -> None:
+    #     """
+    #     Write a memory cell.
+    #     """
+    #     if ctype in {ctypes.c_int8, ctypes.c_uint8}:
+    #         tncmd = (f"mwb {addr} {val}\n").encode("ascii")
+    #     elif ctype in {ctypes.c_int16, ctypes.c_uint16}:
+    #         tncmd = (f"mwh {addr} {val}\n").encode("ascii")
+    #     elif ctype in {ctypes.c_int32, ctypes.c_uint32}:
+    #         tncmd = (f"mww {addr} {val}\n").encode("ascii")
+    #     elif ctype in {ctypes.c_int64, ctypes.c_uint64}:
+    #         tncmd = (f"mwd {addr} {val}\n").encode("ascii")
+    #     else:
+    #         raise NotImplementedError(f"{ctype}")
+    #     self.tlnt.write(tncmd)
+    #     _ = self.tlnt.read_until(b">", timeout=2.0).decode("ascii")

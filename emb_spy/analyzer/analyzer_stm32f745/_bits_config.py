@@ -64,6 +64,7 @@ def _get_bits_config(
     mmap_reg_names.extend([
         "SCB_CCR",
         # "CLIDR", "CTR", "CCSIDR", "CSSELR",
+        "DWT_PCSR",
     ])
 
     soc = STM32F745()
