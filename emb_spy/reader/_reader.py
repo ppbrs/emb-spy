@@ -20,10 +20,6 @@ from emb_spy.socs.bits import Bits
 from emb_spy.socs.reg import Reg
 from emb_spy.socs.soc import SoC
 
-# import cpp_demangle  # https://github.com/benfred/py-cpp-demangle
-# import elftools.elf.elffile
-
-
 
 # todo: Config = MmapRegConfig | ...
 
