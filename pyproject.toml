@@ -64,3 +64,15 @@ line-length = 100
 quote-style = "double"
 # Indent with spaces, rather than tabs.
 indent-style = "space"
+
+# ==================================================================================================
+# isort
+# ==================================================================================================
+[tool.isort]
+# See all isort options: https://pycqa.github.io/isort/docs/configuration/options.html
+line_length = 100
+wrap_length = 100
+
+# Personally, I find this option the best. It allows faster debugging and leaving comments
+# for a particular import.
+force_single_line = "True"

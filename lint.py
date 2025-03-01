@@ -50,3 +50,23 @@ def test_lint_ruff_format(
         for line in completed_process.stderr.splitlines():
             _logger.error(line)
         assert False, f"Ruff thinks '{path}' needs reformatting."
+
+
+@pytest.mark.parametrize(
+    argnames="path", argvalues=_get_all_python_modules(), ids=_get_all_python_modules()
+)
+def test_lint_isort(
+    path: str,
+) -> None:
+    """Check that imports in this python module are properly sorted and formatted."""
+    completed_process = subprocess.run(
+        f"isort {path} --check",
+        shell=True,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if completed_process.returncode != 0:
+        for line in completed_process.stderr.splitlines():
+            _logger.error("%s", line)
+        assert False, "isort failed"
