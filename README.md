@@ -2,6 +2,15 @@
 
 Debugging framework for embedded systems.
 
+# Overview
+
+## demangle
+
+Function for demangling C++ symbol names.
+
+## Elf
+
+Functions for programmatical extraction of information from ELF files.
 
 # Building instructions (for the maintainer)
 
