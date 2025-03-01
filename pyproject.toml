@@ -36,6 +36,22 @@ path = "emb_spy/__about__.py"
 "Bug Tracker" = "https://github.com/ppbrs/emb-spy/issues"
 
 # ==================================================================================================
+# pytest configuration
+# ==================================================================================================
+[tool.pytest.ini_options]
+# Having pytest look for all files instead of "test_*.py" only:
+python_files = "*.py"
+
+# Logging level for failed tests:
+log_level = "DEBUG"
+log_date_format = "%H:%M:%S"
+log_format = "%(asctime)s.%(msecs)03d %(levelname)s %(funcName)s: %(message)s"
+
+# Logging level for real-time output:
+log_cli = "True"
+log_cli_level = "INFO"
+
+# ==================================================================================================
 # Ruff
 # ==================================================================================================
 [tool.ruff]
