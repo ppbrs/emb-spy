@@ -39,6 +39,15 @@
 			"command": "isort '${file}'",
 			"group": "build",
 		},
+		{
+			"label": "python3: Run MYPY on this module.",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}",
+			},
+			"command": "mypy --config-file=pyproject.toml '${file}'",
+			"group": "build",
+		},
 		// -----------------------------------------------------------------------------------------
 	]
 }

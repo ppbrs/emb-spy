@@ -38,6 +38,12 @@
 					"working_dir": "${project_path}",
 					"shell_cmd": "isort '${file}'",
 				},
+				{
+					"name": "python3: Run MYPY on this module.",
+					"working_dir": "${project_path}",
+					"shell_cmd": "mypy --config-file=pyproject.toml '${file}'",
+				},
+				// ---------------------------------------------------------------------------------
 			],
 		},
 	],
