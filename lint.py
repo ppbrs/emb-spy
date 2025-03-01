@@ -70,3 +70,26 @@ def test_lint_isort(
         for line in completed_process.stderr.splitlines():
             _logger.error("%s", line)
         assert False, "isort failed"
+
+
+@pytest.mark.parametrize(
+    argnames="path", argvalues=_get_all_python_modules(), ids=_get_all_python_modules()
+)
+def test_lint_pylint(
+    path: str,
+) -> None:
+    """Run pylint on this python module."""
+    completed_process = subprocess.run(
+        f"pylint --verbose --rc-file=pyproject.toml {path}",
+        shell=True,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    for line in completed_process.stdout.splitlines():
+        if line:
+            _logger.info("%s", line)
+    if completed_process.returncode != 0:
+        for line in completed_process.stderr.splitlines():
+            _logger.error("%s", line)
+        assert False, "pylint failed"
