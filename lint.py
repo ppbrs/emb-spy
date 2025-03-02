@@ -116,3 +116,26 @@ def test_lint_mypy(
         for line in completed_process.stderr.splitlines():
             _logger.error("%s", line)
         assert False, "mypy failed"
+
+
+@pytest.mark.parametrize(
+    argnames="path", argvalues=_get_all_python_modules(), ids=_get_all_python_modules()
+)
+def test_lint_pyright(
+    path: str,
+) -> None:
+    """Run pyright on this python module."""
+    completed_process = subprocess.run(
+        f"pyright {path}",
+        shell=True,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    for line in completed_process.stdout.splitlines():
+        if line:
+            _logger.info("%s", line)
+    if completed_process.returncode != 0:
+        for line in completed_process.stderr.splitlines():
+            _logger.error("%s", line)
+        assert False, "pyright failed"

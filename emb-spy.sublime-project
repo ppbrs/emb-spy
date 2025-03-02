@@ -43,6 +43,12 @@
 					"working_dir": "${project_path}",
 					"shell_cmd": "mypy --config-file=pyproject.toml '${file}'",
 				},
+				{
+					"name": "python3: Run PYRIGHT on all repo.",
+					"working_dir": "${project_path}",
+					"shell_cmd": "pyright",
+					"file_regex": "(...*?):([0-9]*):.*",
+				},
 				// ---------------------------------------------------------------------------------
 			],
 		},
