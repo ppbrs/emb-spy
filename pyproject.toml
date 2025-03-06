@@ -34,3 +34,17 @@ path = "emb_spy/__about__.py"
 [project.urls]
 "Homepage" = "https://github.com/ppbrs/emb-spy"
 "Bug Tracker" = "https://github.com/ppbrs/emb-spy/issues"
+
+# ==================================================================================================
+# Ruff
+# ==================================================================================================
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.format]
+# https://docs.astral.sh/ruff/formatter/
+
+# Use double quotes for strings.
+quote-style = "double"
+# Indent with spaces, rather than tabs.
+indent-style = "space"

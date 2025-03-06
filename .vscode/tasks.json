@@ -1,12 +1,34 @@
 {
 	"version": "2.0.0",
-	"tasks":
-	[
+	"tasks": [
+		// -----------------------------------------------------------------------------------------
 		{
 			"label": "python3: Run this script locally.",
 			"type": "shell",
 			"command": "cd ${fileDirname} && python3 -u ${file}",
 			"group": "build",
 		},
+		// -----------------------------------------------------------------------------------------
+		// lint
+		// -----------------------------------------------------------------------------------------
+		{
+			"label": "python3: Run RUFF FORMAT on this module.",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}",
+			},
+			"command": "ruff format '${file}'",
+			"group": "build",
+		},
+		{
+			"label": "python3: Dry run RUFF FORMAT on all repo.",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}",
+			},
+			"command": "ruff format --diff",
+			"group": "build",
+		},
+		// -----------------------------------------------------------------------------------------
 	]
 }
