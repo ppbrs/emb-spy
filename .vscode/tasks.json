@@ -39,6 +39,17 @@
 			"command": "isort '${file}'",
 			"group": "build",
 		},
+		// -----------------------------------------------------------------------------------------
+		{
+			"label": "python3: Run PYLINT on this module.",
+			"type": "shell",
+			"options": {
+				"cwd": "${workspaceFolder}",
+			},
+			"command": "clear; pylint --verbose --rc-file=pyproject.toml '${file}'",
+			"group": "build",
+		},
+		// -----------------------------------------------------------------------------------------
 		{
 			"label": "python3: Run MYPY on this module.",
 			"type": "shell",
