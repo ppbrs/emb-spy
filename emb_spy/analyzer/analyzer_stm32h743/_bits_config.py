@@ -66,8 +66,15 @@ def get_bits_config(
         "SYS_FLASH_SIZE",
         "SYS_UID0", "SYS_UID1", "SYS_UID2",
         "SYSCFG_PMCR", "SYSCFG_PKGR",
-        "HRTIM_MCR",
         "SYST_CSR", "SYST_RVR", "SYST_CVR", "SYST_CALIB",
+    ])
+    mmap_reg_names.extend([
+        "HRTIM_MCR",
+        "HRTIM_CNTAR", "HRTIM_PERAR", "HRTIM_TIMACR",
+        "HRTIM_CNTBR", "HRTIM_PERBR", "HRTIM_TIMBCR",
+        "HRTIM_CNTCR", "HRTIM_PERCR", "HRTIM_TIMCCR",
+        "HRTIM_CNTDR", "HRTIM_PERDR", "HRTIM_TIMDCR",
+        "HRTIM_CNTER", "HRTIM_PERER", "HRTIM_TIMECR",
     ])
     mmap_reg_names.extend([
         "QUADSPI_CR", "QUADSPI_DCR",

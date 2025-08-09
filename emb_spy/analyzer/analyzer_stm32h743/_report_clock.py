@@ -32,7 +32,7 @@ def report_clock(
         if hse_bypass:
             if not isinstance(hse_freq := self.board_cfg.external_freq, int | float):
                 raise ValueError("Valid `external_freq` is required.")
-            md_file.new_line(f"HSE is ON and ready, external clock source, {hse_freq / 1e6}MHz.")
+            md_file.new_line(f"* HSE is ON and ready, external clock source, {hse_freq / 1e6}MHz.")
         else:
             if not isinstance(hse_freq := self.board_cfg.resonator_freq, int | float):
                 raise ValueError("Valid `resonator_freq` is required.")

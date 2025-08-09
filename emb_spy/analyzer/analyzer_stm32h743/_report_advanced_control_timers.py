@@ -1,4 +1,5 @@
 """Part of AnalyzerSTM32H743 class."""
+
 from emb_spy import ReaderStaticResult
 
 
@@ -30,7 +31,8 @@ def _report_advanced_control_timer(
 
     enabled = bits_data[f"{tim}_CR1.CEN"].val
     if not enabled:
-        md_file.new_header(level=2, title=tim + "(disabled)")
+        md_file.new_header(level=2, title=tim + " (disabled)")
+        md_file.new_line("***")
         return
 
     md_file.new_header(level=2, title=tim)
