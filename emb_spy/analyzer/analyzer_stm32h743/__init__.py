@@ -15,6 +15,7 @@ from emb_spy.analyzer.analyzer_stm32h743._report_advanced_control_timers import 
     report_advanced_control_timers
 from emb_spy.analyzer.analyzer_stm32h743._report_clock import report_clock
 from emb_spy.analyzer.analyzer_stm32h743._report_clock_enable import report_clock_enable
+from emb_spy.analyzer.analyzer_stm32h743._report_basic_timers import report_basic_timers
 from emb_spy.analyzer.analyzer_stm32h743._report_dac import report_dac
 from emb_spy.analyzer.analyzer_stm32h743._report_dma import report_dma
 from emb_spy.analyzer.analyzer_stm32h743._report_dma_mux import report_dma_mux
@@ -67,6 +68,7 @@ class AnalyzerSTM32H743(Analyzer):
             bits_data, md_file, port_list=["A", "B", "C", "D", "F", ], af_descr_getter=get_af_descr)
         report_advanced_control_timers(self, bits_data, md_file)
         report_hrtim(self, bits_data, md_file)
+        report_basic_timers(self, bits_data, md_file)
         report_dma(self, bits_data, md_file)
         report_dma_mux(self, bits_data, md_file)
         report_clock_enable(self, bits_data, md_file)

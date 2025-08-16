@@ -52,6 +52,8 @@ def _report_clock_enable_d2(
         ClockResetEnableItemStm32("USB2 PHY", None, "RCC_AHB1ENR.USB2OTGHSULPIEN"),
         ClockResetEnableItemStm32("USB2 OTG Peripheral", None, "RCC_AHB1ENR.USB2OTGHSEN"),
         ClockResetEnableItemStm32("HRTIM", None, "RCC_APB2ENR.HRTIMEN"),
+        ClockResetEnableItemStm32("TIM6", None, "RCC_APB1LENR.TIM6EN"),
+        ClockResetEnableItemStm32("TIM7", None, "RCC_APB1LENR.TIM7EN"),
         ClockResetEnableItemStm32("SPI1", None, "RCC_APB2ENR.SPI1EN"),
         ClockResetEnableItemStm32("SPI2", None, "RCC_APB1LENR.SPI2EN"),
         ClockResetEnableItemStm32("SPI3", None, "RCC_APB1LENR.SPI3EN"),

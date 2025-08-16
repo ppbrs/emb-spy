@@ -19,6 +19,7 @@ from ._rcc import init_rcc
 from ._syscfg import init_syscfg
 from ._system_flash import init_system_flash
 from ._tim2_tim3_tim4_tim5 import init_tim2_tim3_tim4_tim5
+from ._tim6_tim7 import init_tim6_tim7
 from ._hrtim import init_hrtim
 
 
@@ -63,6 +64,7 @@ class STM32H743(SoC):
         init_system_flash(self)
         init_tim1_tim8(self, prefix="TIM1", base=self.TIM1_BASE)
         init_tim1_tim8(self, prefix="TIM8", base=self.TIM8_BASE)
+        init_tim6_tim7(self)
         init_tim2_tim3_tim4_tim5(self)
         self._init_flash()
         self._init_gpio()
