@@ -1,4 +1,4 @@
-"""Part of STM32H743 SoC."""
+"""RCC part of STM32H743 SoC."""
 
 from emb_spy.socs.bits import Bits
 from emb_spy.socs.reg import MmapReg
@@ -6,6 +6,7 @@ from emb_spy.socs.soc import SoC
 
 
 def init_rcc(self: SoC) -> None:
+    """Update SoC with memory-mapped registers accessing RCC."""
     assert self.__class__.__name__ == "STM32H743"
     base = 0x58024400
     # ==============================================================================================
@@ -15,121 +16,31 @@ def init_rcc(self: SoC) -> None:
             addr=(base + 0x000),
             descr="RCC source control register.",
             bits=[
+                Bits(bits=29, name="PLL3RDY", descr="PLL3 clock ready flag"),
+                Bits(bits=28, name="PLL3ON", descr="PLL3 enable"),
+                Bits(bits=27, name="PLL2RDY", descr="PLL2 clock ready flag"),
+                Bits(bits=26, name="PLL2ON", descr="PLL2 enable"),
+                Bits(bits=25, name="PLL1RDY", descr="PLL1 clock ready flag"),
+                Bits(bits=24, name="PLL1ON", descr="PLL1 enable"),
+                Bits(bits=19, name="HSECSSON", descr="HSE Clock Security System enable"),
+                Bits(bits=18, name="HSEBYP", descr="HSE clock bypass"),
+                Bits(bits=17, name="HSERDY", descr="HSE clock ready flag"),
+                Bits(bits=16, name="HSEON", descr="HSE clock enable"),
+                Bits(bits=15, name="D2CKRDY", descr="D2 domain clocks ready flag"),
+                Bits(bits=14, name="D1CKRDY", descr="D1 domain clocks ready flag"),
+                Bits(bits=13, name="HSI48RDY", descr="HSI48 clock ready flag"),
+                Bits(bits=12, name="HSI48ON", descr="HSI48 clock enable"),
+                Bits(bits=9, name="CSIKERON", descr="CSI clock enable in Stop mode"),
+                Bits(bits=8, name="CSIRDY", descr="CSI clock ready flag"),
+                Bits(bits=7, name="CSION", descr="CSI clock enable"),
+                Bits(bits=6, name="Reserved", descr="must be kept at reset value."),
+                Bits(bits=5, name="HSIDIVF", descr="HSI divider flag"),
+                Bits(bits=range(3, 5), name="HSIDIV", descr="HSI clock divider"),
+                Bits(bits=2, name="HSIRDY", descr="HSI clock ready flag"),
                 Bits(
-                    bits=29,
-                    name="PLL3RDY",
-                    descr="PLL3 clock ready flag",
+                    bits=1, name="HSIKERON", descr="High Speed Internal clock enable in Stop mode"
                 ),
-                Bits(
-                    bits=28,
-                    name="PLL3ON",
-                    descr="PLL3 enable",
-                ),
-                Bits(
-                    bits=27,
-                    name="PLL2RDY",
-                    descr="PLL2 clock ready flag",
-                ),
-                Bits(
-                    bits=26,
-                    name="PLL2ON",
-                    descr="PLL2 enable",
-                ),
-                Bits(
-                    bits=25,
-                    name="PLL1RDY",
-                    descr="PLL1 clock ready flag",
-                ),
-                Bits(
-                    bits=24,
-                    name="PLL1ON",
-                    descr="PLL1 enable",
-                ),
-                Bits(
-                    bits=19,
-                    name="HSECSSON",
-                    descr="HSE Clock Security System enable",
-                ),
-                Bits(
-                    bits=18,
-                    name="HSEBYP",
-                    descr="HSE clock bypass",
-                ),
-                Bits(
-                    bits=17,
-                    name="HSERDY",
-                    descr="HSE clock ready flag",
-                ),
-                Bits(
-                    bits=16,
-                    name="HSEON",
-                    descr="HSE clock enable",
-                ),
-                Bits(
-                    bits=15,
-                    name="D2CKRDY",
-                    descr="D2 domain clocks ready flag",
-                ),
-                Bits(
-                    bits=14,
-                    name="D1CKRDY",
-                    descr="D1 domain clocks ready flag",
-                ),
-                Bits(
-                    bits=13,
-                    name="HSI48RDY",
-                    descr="HSI48 clock ready flag",
-                ),
-                Bits(
-                    bits=12,
-                    name="HSI48ON",
-                    descr="HSI48 clock enable",
-                ),
-                Bits(
-                    bits=9,
-                    name="CSIKERON",
-                    descr="CSI clock enable in Stop mode",
-                ),
-                Bits(
-                    bits=8,
-                    name="CSIRDY",
-                    descr="CSI clock ready flag",
-                ),
-                Bits(
-                    bits=7,
-                    name="CSION",
-                    descr="CSI clock enable",
-                ),
-                Bits(
-                    bits=6,
-                    name="Reserved",
-                    descr="must be kept at reset value.",
-                ),
-                Bits(
-                    bits=5,
-                    name="HSIDIVF",
-                    descr="HSI divider flag",
-                ),
-                Bits(
-                    bits=range(3, 5),
-                    name="HSIDIV",
-                    descr="HSI clock divider",
-                ),
-                Bits(
-                    bits=2,
-                    name="HSIRDY",
-                    descr="HSI clock ready flag",
-                ),
-                Bits(
-                    bits=1,
-                    name="HSIKERON",
-                    descr="High Speed Internal clock enable in Stop mode",
-                ),
-                Bits(
-                    bits=0,
-                    name="HSION",
-                    descr="High Speed Internal clock enable",
-                ),
+                Bits(bits=0, name="HSION", descr="High Speed Internal clock enable"),
             ],
         )
     )
@@ -377,12 +288,23 @@ def init_rcc(self: SoC) -> None:
                     name="I2C123SEL",
                     descr="I2C1,2,3 kernel clock source selection",
                     descr_vals={
-                        0: "rcc_pclk1 clock is selected as kernel clock (default after reset)",
+                        0: "rcc_pclk1 clock is selected as kernel clock",
                         1: "pll3_r_ck clock is selected as kernel clock",
                         2: "hsi_ker_ck clock is selected as kernel clock",
                         3: "csi_ker_ck clock is selected as kernel clock",
                     },
-                )
+                ),
+                Bits(
+                    bits=[20, 21],
+                    name="USBSEL",
+                    descr="USBOTG 1 and 2 kernel clock source selection",
+                    descr_vals={
+                        0: "Disable the kernel clock",
+                        1: "pll1_q_ck clock is selected as kernel clock",
+                        2: "pll3_q_ck clock is selected as kernel clock",
+                        3: "hsi48_ck clock is selected as kernel clock",
+                    },
+                ),
             ],
         )
     )

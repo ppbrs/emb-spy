@@ -5,13 +5,12 @@ from emb_spy import STM32H743
 from emb_spy import ReaderConfigCoreReg
 from emb_spy import ReaderConfigCoreRegBits
 from emb_spy import ReaderConfigMmapRegBits
-from emb_spy import ReaderStaticResult
 from emb_spy.analyzer.analyzer import ConfigType
 
 
 def get_bits_config(
     self,
-) -> dict[str, ReaderStaticResult]:
+) -> ConfigType:
     """Read all necessary register bits from the SoC."""
     # Circular import error does not allow importin AnalyzerSTM32H743 from this module, hence this:
     assert self.__class__.__name__ == "AnalyzerSTM32H743"
@@ -157,6 +156,7 @@ def get_bits_config(
             "HRTIM_MCR",
             #
             "HRTIM_CNTAR",
+            "HRTIM_TIMADIER",
             "HRTIM_PERAR",
             "HRTIM_TIMACR",
             "HRTIM_SETA1R",
@@ -165,6 +165,7 @@ def get_bits_config(
             "HRTIM_RSTA2R",
             #
             "HRTIM_CNTBR",
+            "HRTIM_TIMBDIER",
             "HRTIM_PERBR",
             "HRTIM_TIMBCR",
             "HRTIM_SETB1R",
@@ -173,6 +174,7 @@ def get_bits_config(
             "HRTIM_RSTB2R",
             #
             "HRTIM_CNTCR",
+            "HRTIM_TIMCDIER",
             "HRTIM_PERCR",
             "HRTIM_TIMCCR",
             "HRTIM_SETC1R",
@@ -181,6 +183,7 @@ def get_bits_config(
             "HRTIM_RSTC2R",
             #
             "HRTIM_CNTDR",
+            "HRTIM_TIMDDIER",
             "HRTIM_PERDR",
             "HRTIM_TIMDCR",
             "HRTIM_SETD1R",
@@ -189,6 +192,7 @@ def get_bits_config(
             "HRTIM_RSTD2R",
             #
             "HRTIM_CNTER",
+            "HRTIM_TIMEDIER",
             "HRTIM_PERER",
             "HRTIM_TIMECR",
             "HRTIM_SETE1R",
@@ -231,21 +235,6 @@ def get_bits_config(
     )
     mmap_reg_names.extend(
         [
-            "RCC_CFGR",
-            "RCC_CR",
-            "RCC_D1CFGR",
-            "RCC_D2CFGR",
-            "RCC_D3CCIPR",
-            "RCC_D3CFGR",
-            "RCC_PLL1DIVR",
-            "RCC_PLL1FRACR",
-            "RCC_PLL2DIVR",
-            "RCC_PLL2FRACR",
-            "RCC_PLL3DIVR",
-            "RCC_PLL3FRACR",
-            "RCC_PLLCFGR",
-            "RCC_PLLCKSELR",
-            "RCC_D1CCIPR",
             "RCC_AHB1ENR",
             "RCC_AHB1RSTR",
             "RCC_AHB2ENR",
@@ -264,6 +253,22 @@ def get_bits_config(
             "RCC_APB3RSTR",
             "RCC_APB4ENR",
             "RCC_APB4RSTR",
+            "RCC_CFGR",
+            "RCC_CR",
+            "RCC_D1CCIPR",
+            "RCC_D1CFGR",
+            "RCC_D2CFGR",
+            "RCC_D2CCIP2R",
+            "RCC_D3CCIPR",
+            "RCC_D3CFGR",
+            "RCC_PLL1DIVR",
+            "RCC_PLL1FRACR",
+            "RCC_PLL2DIVR",
+            "RCC_PLL2FRACR",
+            "RCC_PLL3DIVR",
+            "RCC_PLL3FRACR",
+            "RCC_PLLCFGR",
+            "RCC_PLLCKSELR",
         ]
     )
     mmap_reg_names.extend(
@@ -281,6 +286,8 @@ def get_bits_config(
             "DWT_PCSR",
         ]
     )
+
+    mmap_reg_names.extend(["PWR_CR3"])
 
     # Core
     config.extend([ReaderConfigCoreReg(f"R{i}") for i in range(13)])

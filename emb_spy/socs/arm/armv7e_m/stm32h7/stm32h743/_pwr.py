@@ -37,13 +37,9 @@ def init_pwr(self: SoC) -> None:
             addr=(pwr_base + 0x00C),
             descr="PWR control register 3",
             bits=[
-                # Bit 26 USB33RDY: USB supply ready.
-                # 0: USB33 supply not ready.
-                # 1: USB33 supply ready.
-                # Bit 25 USBREGEN: USB regulator enable.
-                # 0: USB regulator disabled.
-                # 1: USB regulator enabled.
-                # Bit 24 USB33DEN: VDD33USB voltage level detector enable.
+                Bits(bits=26, name="USB33RDY", descr="USB supply ready."),
+                Bits(bits=25, name="USBREGEN", descr="USB regulator enable."),
+                Bits(bits=24, name="USB33DEN", descr="VDD33USB voltage level detector enable."),
                 # Bit 9 VBRS: VBAT charging resistor selection
                 # 0: Charge VBAT through a 5 kΩ resistor.
                 # 1: Charge VBAT through a 1.5 kΩ resistor.

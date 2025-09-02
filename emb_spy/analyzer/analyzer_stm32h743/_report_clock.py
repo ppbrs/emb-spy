@@ -33,6 +33,15 @@ def report_clock(
         self.state.hsi_freq = 0
         md_file.new_line("* HSI is OFF or not ready")
 
+    hsi48_rdy = bits_data["RCC_CR.HSI48RDY"].val
+    hsi48_on = bits_data["RCC_CR.HSI48ON"].val
+    if hsi48_on and hsi48_rdy:
+        self.state.hsi48_freq = 48_000_000
+        md_file.new_line("* HSI48 is ON and ready")
+    else:
+        self.state.hsi48_freq = 0
+        md_file.new_line("* HSI48 is OFF or not ready")
+
     hse_rdy = bits_data["RCC_CR.HSERDY"].val
     hse_on = bits_data["RCC_CR.HSEON"].val
     if hse_on and hse_rdy:

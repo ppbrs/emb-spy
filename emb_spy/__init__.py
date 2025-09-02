@@ -1,5 +1,5 @@
 """
-Expose emb_spy public classes and functions.
+Expose emb-spy public classes and functions.
 """
 
 from .__about__ import __version__

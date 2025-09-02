@@ -16,12 +16,12 @@ def report_hrtim(
 
     md_file.new_header(level=1, title="HRTIM")
 
-    master_en = bits_data["HRTIM_MCR.MCEN"].val
-    tmr_a_en = bits_data["HRTIM_MCR.TACEN"].val
-    tmr_b_en = bits_data["HRTIM_MCR.TBCEN"].val
-    tmr_c_en = bits_data["HRTIM_MCR.TCCEN"].val
-    tmr_d_en = bits_data["HRTIM_MCR.TDCEN"].val
-    tmr_e_en = bits_data["HRTIM_MCR.TECEN"].val
+    master_en = bool(bits_data["HRTIM_MCR.MCEN"].val)
+    tmr_a_en = bool(bits_data["HRTIM_MCR.TACEN"].val)
+    tmr_b_en = bool(bits_data["HRTIM_MCR.TBCEN"].val)
+    tmr_c_en = bool(bits_data["HRTIM_MCR.TCCEN"].val)
+    tmr_d_en = bool(bits_data["HRTIM_MCR.TDCEN"].val)
+    tmr_e_en = bool(bits_data["HRTIM_MCR.TECEN"].val)
 
     if master_en:
         md_file.new_line("* Master timer enabled")
@@ -58,7 +58,7 @@ def _report_hrtim_timer(
             case 0b111:
                 freq = self.state.hrtim_freq / 4
             case _:
-                raise ValueError(f"HRTIM_TIM{f}CR.CKPSC")
+                raise ValueError(f"HRTIM_TIM{idx}CR.CKPSC")
         md_file.new_line(f"\t* {freq} Hz")
         md_file.new_line(f"\t* CNT = {cnt}, PER = {per} = {freq / per} Hz")
         #
@@ -69,55 +69,55 @@ def _report_hrtim_timer(
                 events: list[str] = []
                 reg = f"HRTIM_{out_type}{idx}{out_idx}R"
                 if bits_data[f"{reg}.UPDATE"].val:
-                    events.append(f"UPDATE = Registers update")
+                    events.append("UPDATE = Registers update")
                 if bits_data[f"{reg}.EXTEVNT10"].val:
-                    events.append(f"EXTEVNT10 = External Event 10")
+                    events.append("EXTEVNT10 = External Event 10")
                 if bits_data[f"{reg}.EXTEVNT9"].val:
-                    events.append(f"EXTEVNT9 = External Event 9")
+                    events.append("EXTEVNT9 = External Event 9")
                 if bits_data[f"{reg}.EXTEVNT8"].val:
-                    events.append(f"EXTEVNT8 = External Event 8")
+                    events.append("EXTEVNT8 = External Event 8")
                 if bits_data[f"{reg}.EXTEVNT7"].val:
-                    events.append(f"EXTEVNT7 = External Event 7")
+                    events.append("EXTEVNT7 = External Event 7")
                 if bits_data[f"{reg}.EXTEVNT6"].val:
-                    events.append(f"EXTEVNT6 = External Event 6")
+                    events.append("EXTEVNT6 = External Event 6")
                 if bits_data[f"{reg}.EXTEVNT5"].val:
-                    events.append(f"EXTEVNT5 = External Event 5")
+                    events.append("EXTEVNT5 = External Event 5")
                 if bits_data[f"{reg}.EXTEVNT4"].val:
-                    events.append(f"EXTEVNT4 = External Event 4")
+                    events.append("EXTEVNT4 = External Event 4")
                 if bits_data[f"{reg}.EXTEVNT3"].val:
-                    events.append(f"EXTEVNT3 = External Event 3")
+                    events.append("EXTEVNT3 = External Event 3")
                 if bits_data[f"{reg}.EXTEVNT2"].val:
-                    events.append(f"EXTEVNT2 = External Event 2")
+                    events.append("EXTEVNT2 = External Event 2")
                 if bits_data[f"{reg}.EXTEVNT1"].val:
-                    events.append(f"EXTEVNT1 = External Event 1")
+                    events.append("EXTEVNT1 = External Event 1")
                 if bits_data[f"{reg}.TIMEVNT9"].val:
-                    events.append(f"TIMEVNT9 = Timer Event 9")
+                    events.append("TIMEVNT9 = Timer Event 9")
                 if bits_data[f"{reg}.TIMEVNT8"].val:
-                    events.append(f"TIMEVNT8 = Timer Event 8")
+                    events.append("TIMEVNT8 = Timer Event 8")
                 if bits_data[f"{reg}.TIMEVNT7"].val:
-                    events.append(f"TIMEVNT7 = Timer Event 7")
+                    events.append("TIMEVNT7 = Timer Event 7")
                 if bits_data[f"{reg}.TIMEVNT6"].val:
-                    events.append(f"TIMEVNT6 = Timer Event 6")
+                    events.append("TIMEVNT6 = Timer Event 6")
                 if bits_data[f"{reg}.TIMEVNT5"].val:
-                    events.append(f"TIMEVNT5 = Timer Event 5")
+                    events.append("TIMEVNT5 = Timer Event 5")
                 if bits_data[f"{reg}.TIMEVNT4"].val:
-                    events.append(f"TIMEVNT4 = Timer Event 4")
+                    events.append("TIMEVNT4 = Timer Event 4")
                 if bits_data[f"{reg}.TIMEVNT3"].val:
-                    events.append(f"TIMEVNT3 = Timer Event 3")
+                    events.append("TIMEVNT3 = Timer Event 3")
                 if bits_data[f"{reg}.TIMEVNT2"].val:
-                    events.append(f"TIMEVNT2 = Timer Event 2")
+                    events.append("TIMEVNT2 = Timer Event 2")
                 if bits_data[f"{reg}.TIMEVNT1"].val:
-                    events.append(f"TIMEVNT1 = imer Event 1")
+                    events.append("TIMEVNT1 = imer Event 1")
                 if bits_data[f"{reg}.MSTCMP4"].val:
-                    events.append(f"MSTCMP4 = Master Compare 4")
+                    events.append("MSTCMP4 = Master Compare 4")
                 if bits_data[f"{reg}.MSTCMP3"].val:
-                    events.append(f"MSTCMP3 = Master Compare 3")
+                    events.append("MSTCMP3 = Master Compare 3")
                 if bits_data[f"{reg}.MSTCMP2"].val:
-                    events.append(f"MSTCMP2 = Master Compare 2")
+                    events.append("MSTCMP2 = Master Compare 2")
                 if bits_data[f"{reg}.MSTCMP1"].val:
-                    events.append(f"MSTCMP1 = Master Compare 1")
+                    events.append("MSTCMP1 = Master Compare 1")
                 if bits_data[f"{reg}.MSTPER"].val:
-                    events.append(f"MSTPER = Master Period")
+                    events.append("MSTPER = Master Period")
                 if bits_data[f"{reg}.CMP4"].val:
                     events.append(f"CMP4 = Timer {idx} Compare 4")
                 if bits_data[f"{reg}.CMP3"].val:
@@ -129,12 +129,17 @@ def _report_hrtim_timer(
                 if bits_data[f"{reg}.PER"].val:
                     events.append(f"PER = Timer {idx} Period")
                 if bits_data[f"{reg}.RESYNC"].val:
-                    events.append(f"RESYNC = Timer A resynchronization")
+                    events.append("RESYNC = Timer A resynchronization")
                 if bits_data[f"{reg}.SST"].val:
-                    events.append(f"SST = Software Set trigger")
+                    events.append("SST = Software Set trigger")
 
                 if events:
                     md_file.new_line(f"\t* Output {out_idx} {out_type}: " + ", ".join(events))
+
+        #
+        # Interrupts
+        #
+        # HRTIM_TIM{idx}DIER
 
     else:
         md_file.new_line(f"* Timer {idx} disabled")

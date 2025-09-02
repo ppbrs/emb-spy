@@ -6,16 +6,17 @@ from emb_spy.socs.soc import SoC
 
 
 def init_hrtim(self: SoC) -> None:
+    """Define HRTIM registers."""
     assert self.__class__.__name__ == "STM32H743"
 
     base = 0x40017400
-    base_master = base
+    # base_master = base
     base_timer_a = base + 0x080
     base_timer_b = base + 0x100
     base_timer_c = base + 0x180
     base_timer_d = base + 0x200
     base_timer_e = base + 0x280
-    base_common = base + 0x380
+    # base_common = base + 0x380
 
     self.append(
         MmapReg(
@@ -41,7 +42,7 @@ def init_hrtim(self: SoC) -> None:
         )
     )
 
-    for x, base_timer in zip(
+    for x, base_timer_x in zip(
         [
             "A",
             "B",
@@ -57,20 +58,64 @@ def init_hrtim(self: SoC) -> None:
             base_timer_e,
         ],
     ):
+        # ------------------------------------------------------------------------------------------
         self.append(
             MmapReg(
                 name=f"HRTIM_TIM{x}CR",
-                addr=(base_timer + 0x000),
+                addr=(base_timer_x + 0x000),
                 descr=f"HRTIM Timer{x} Control Register.",
                 bits=[
                     Bits(bits=range(0, 3), name="CKPSC", descr=f"Timer{x} Clock prescaler"),
                 ],
             )
         )
+        # ------------------------------------------------------------------------------------------
+        # HRTIM Timerx Interrupt Status Register (HRTIM_TIMxISR), Address offset: 0x0004h
+        # ------------------------------------------------------------------------------------------
+        # HRTIM Timerx Interrupt Clear Register (HRTIM_TIMxICR), Address offset: 0x0008h
+        # ------------------------------------------------------------------------------------------
+        self.append(
+            MmapReg(
+                name=f"HRTIM_TIM{x}DIER",
+                addr=(base_timer_x + 0x00C),
+                descr=f"HRTIM Timer{x} DMA / Interrupt Enable Register.",
+                bits=[
+                    Bits(bits=30, name="DLYPRTDE", descr="Delayed Protection DMA request Enable"),
+                    Bits(bits=29, name="RSTDE", descr="Reset/roll-over DMA request Enable"),
+                    Bits(bits=28, name="RST2DE", descr="Output 2 Reset DMA request Enable"),
+                    Bits(bits=27, name="SET2DE", descr="Output 2 Set DMA request Enable"),
+                    Bits(bits=26, name="RST1DE", descr="Output 1 Reset DMA request Enable"),
+                    Bits(bits=25, name="SET1DE", descr="Output 1 Set DMA request Enable"),
+                    Bits(bits=24, name="CPT2DE", descr="Capture 2 DMA request Enable"),
+                    Bits(bits=23, name="CPT1DE", descr="Capture 1 DMA request Enable"),
+                    Bits(bits=22, name="UPDDE", descr="Update DMA request Enable"),
+                    Bits(bits=20, name="REPDE", descr="Repetition DMA request Enable"),
+                    Bits(bits=19, name="CMP4DE", descr="Compare 4 DMA request Enable"),
+                    Bits(bits=18, name="CMP3DE", descr="Compare 3 DMA request Enable"),
+                    Bits(bits=17, name="CMP2DE", descr="Compare 2 DMA request Enable"),
+                    Bits(bits=16, name="CMP1DE", descr="Compare 1 DMA request Enable"),
+                    Bits(bits=14, name="DLYPRTIE", descr="Delayed Protection Interrupt Enable"),
+                    Bits(bits=13, name="RSTIE", descr="Reset/roll-over Interrupt Enable"),
+                    Bits(bits=12, name="RST2IE", descr="Output 2 Reset Interrupt Enable"),
+                    Bits(bits=11, name="SET2IE", descr="Output 2 Set Interrupt Enable"),
+                    Bits(bits=10, name="RST1IE", descr="Output 1 Reset Interrupt Enable"),
+                    Bits(bits=9, name="SET1IE", descr="Output 1 Set Interrupt Enable"),
+                    Bits(bits=8, name="CPT2IE", descr="Capture Interrupt Enable"),
+                    Bits(bits=7, name="CPT1IE", descr="Capture Interrupt Enable"),
+                    Bits(bits=6, name="UPDIE", descr="Update Interrupt Enable"),
+                    Bits(bits=4, name="REPIE", descr="Repetition Interrupt Enable"),
+                    Bits(bits=3, name="CMP4IE", descr="Compare 4 Interrupt Enable"),
+                    Bits(bits=2, name="CMP3IE", descr="Compare 3 Interrupt Enable"),
+                    Bits(bits=1, name="CMP2IE", descr="Compare 2 Interrupt Enable"),
+                    Bits(bits=0, name="CMP1IE", descr="Compare 1 Interrupt Enable"),
+                ],
+            )
+        )
+        # ------------------------------------------------------------------------------------------
         self.append(
             MmapReg(
                 name=f"HRTIM_CNT{x}R",
-                addr=(base_timer + 0x010),
+                addr=(base_timer_x + 0x010),
                 descr=f"HRTIM Timer{x} Counter Register.",
                 bits=[
                     Bits(
@@ -81,10 +126,11 @@ def init_hrtim(self: SoC) -> None:
                 ],
             )
         )
+        # ------------------------------------------------------------------------------------------
         self.append(
             MmapReg(
                 name=f"HRTIM_PER{x}R",
-                addr=(base_timer + 0x014),
+                addr=(base_timer_x + 0x014),
                 descr=f"HRTIM Timer{x} Period Register.",
                 bits=[
                     Bits(
@@ -133,7 +179,7 @@ def init_hrtim(self: SoC) -> None:
         self.append(
             MmapReg(
                 name=f"HRTIM_SET{x}1R",
-                addr=(base_timer + 0x3C),
+                addr=(base_timer_x + 0x3C),
                 descr=f"HRTIM Timer{x} Output1 Set Register",
                 bits=output_set_reset_bits,
             )
@@ -141,7 +187,7 @@ def init_hrtim(self: SoC) -> None:
         self.append(
             MmapReg(
                 name=f"HRTIM_RST{x}1R",
-                addr=(base_timer + 0x40),
+                addr=(base_timer_x + 0x40),
                 descr=f"HRTIM Timer{x} Output1 Reset Register",
                 bits=output_set_reset_bits,
             )
@@ -149,7 +195,7 @@ def init_hrtim(self: SoC) -> None:
         self.append(
             MmapReg(
                 name=f"HRTIM_SET{x}2R",
-                addr=(base_timer + 0x44),
+                addr=(base_timer_x + 0x44),
                 descr=f"HRTIM Timer{x} Output2 Set Register",
                 bits=output_set_reset_bits,
             )
@@ -157,7 +203,7 @@ def init_hrtim(self: SoC) -> None:
         self.append(
             MmapReg(
                 name=f"HRTIM_RST{x}2R",
-                addr=(base_timer + 0x48),
+                addr=(base_timer_x + 0x48),
                 descr=f"HRTIM Timer{x} Output2 Reset Register",
                 bits=output_set_reset_bits,
             )

@@ -24,6 +24,7 @@ from emb_spy.analyzer.analyzer_stm32h743._report_dma_mux import report_dma_mux
 from emb_spy.analyzer.analyzer_stm32h743._report_gpio import get_af_descr
 from emb_spy.analyzer.analyzer_stm32h743._report_hrtim import report_hrtim
 from emb_spy.analyzer.analyzer_stm32h743._report_quadspi import report_quadspi
+from emb_spy.analyzer.analyzer_stm32h743._report_usb import report_usb
 from emb_spy.analyzer.analyzer_stm32h743._state import StateSTM32H743
 
 
@@ -81,6 +82,7 @@ class AnalyzerSTM32H743(Analyzer):
         report_dma_mux(self, bits_data, md_file)
         report_clock_enable(self, bits_data, md_file)
         report_quadspi(self, bits_data, md_file)
+        report_usb(self, bits_data, md_file)
 
         pprint.PrettyPrinter(
             indent=4,

@@ -7,7 +7,7 @@ from emb_spy.analyzer.analyzer import State
 Frequency = int | float | None
 """
 Frequency type.
-If the value is None, this means it is not known yet; otherwise, the value is in Hz.
+If the value is None, this means it is not known yet; otherwise, the value is, [Hz].
 """
 
 
@@ -18,11 +18,16 @@ class StateSTM32H743(State):
     is_rev_v: bool | None = None
 
     hse_freq: Frequency = None
+    """HSE frequency, [Hz]."""
 
     hsi_freq: Frequency = None
+    """HSI frequency, [Hz]."""
+
+    hsi48_freq: Frequency = None
+    """HSI48 frequency, [Hz]."""
 
     per_freq: Frequency = None
-    """per_ck frequency, in Hz."""
+    """per_ck frequency, [Hz]."""
 
     ref1_freq: Frequency = None
     """PLL1 input in Hz; must be from 1 to 16 MHz."""
@@ -32,35 +37,35 @@ class StateSTM32H743(State):
     """PLL3 input in Hz; must be from 1 to 16 MHz."""
 
     pll1_p_freq: Frequency = None
-    """PLL1-P output in Hz."""
+    """PLL1-P output, [Hz]."""
     pll1_q_freq: Frequency = None
-    """PLL1-Q output in Hz."""
+    """PLL1-Q output, [Hz]."""
     pll1_r_freq: Frequency = None
-    """PLL1-R output in Hz."""
+    """PLL1-R output, [Hz]."""
 
     pll2_p_freq: Frequency = None
-    """PLL2-P output in Hz."""
+    """PLL2-P output, [Hz]."""
     pll2_q_freq: Frequency = None
-    """PLL2-Q output in Hz."""
+    """PLL2-Q output, [Hz]."""
     pll2_r_freq: Frequency = None
-    """PLL2-R output in Hz."""
+    """PLL2-R output, [Hz]."""
 
     pll3_p_freq: Frequency = None
-    """PLL3-P output in Hz."""
+    """PLL3-P output, [Hz]."""
     pll3_q_freq: Frequency = None
-    """PLL3-Q output in Hz."""
+    """PLL3-Q output, [Hz]."""
     pll3_r_freq: Frequency = None
-    """PLL1-R output in Hz."""
+    """PLL1-R output, [Hz]."""
 
     pll1_vco_freq: Frequency = None
-    """PLL1-VCO in Hz."""
+    """PLL1-VCO, [Hz]."""
     pll2_vco_freq: Frequency = None
-    """PLL1-VCO in Hz."""
+    """PLL1-VCO, [Hz]."""
     pll3_vco_freq: Frequency = None
-    """PLL1-VCO in Hz."""
+    """PLL1-VCO, [Hz]."""
 
     adc_ker_input_freq: Frequency = None
-    """ADC kernel clock input, which is common for all ADCs."""
+    """ADC kernel clock input, [Hz], which is common for all ADCs."""
     adc12_ker_freq: Frequency = None
     adc3_ker_freq: Frequency = None
 
