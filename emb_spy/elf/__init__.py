@@ -6,3 +6,4 @@ from .elf import ElfSymbol
 from .elf import ElfSymbolDisassembly
 from .elf import ElfSymbolName
 from .elf import ElfSymbolNameDemangled
+from .report import report_elf_symbols

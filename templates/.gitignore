@@ -1,2 +1,5 @@
 # Output files from analyzer templates.
 *analyzer*.md
+
+# Output files from Elf templates.
+*.symbols.md

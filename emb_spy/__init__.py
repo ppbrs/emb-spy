@@ -17,6 +17,7 @@ from .elf.elf import ElfSymbol
 from .elf.elf import ElfSymbolDisassembly
 from .elf.elf import ElfSymbolName
 from .elf.elf import ElfSymbolNameDemangled
+from .elf.report import report_elf_symbols
 
 #
 from .pc_sampler import PCSampler
@@ -73,5 +74,6 @@ __all__ = [
     "ElfSymbolDisassembly",
     "ElfSymbolName",
     "ElfSymbolNameDemangled",
+    "report_elf_symbols",
     "SoC",
 ]

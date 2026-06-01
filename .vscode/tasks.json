@@ -35,10 +35,12 @@
 		// python
 		// -----------------------------------------------------------------------------------------
 		{
-			"label": "python3: Run this script locally.",
-			"type": "shell",
-			"command": "cd ${fileDirname} && python3 -u ${file}",
-			"group": "build",
+			"label": "Python: Module: Format. Run in Integrated Terminal.",
+			"type": "shell", "group": "build",
+			"options": {
+				"cwd": "${fileDirname}",
+			},
+			"command": "clear; ruff format '${file}'; echo; echo; python3 -u '${file}'",
 		},
 		// -----------------------------------------------------------------------------------------
 		{

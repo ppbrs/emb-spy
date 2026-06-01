@@ -375,7 +375,9 @@ class Backend:
         ]
         assert lines[0] == tx_line  # echo
         lines = lines[1:]
-        assert len(lines) == num_rx_lines_exp
+        assert len(lines) == num_rx_lines_exp, (
+            f"Expected {num_rx_lines_exp} line(s), got {len(lines)}: {lines}"
+        )
 
         vals: list[str] = []
         for line in lines:
