@@ -51,9 +51,17 @@ class ElfSymbol:
     """Structure that holds information about one symbol."""
 
     name: str
-    """Name of the symbol as it is stored in the object file."""
+    """
+    Name of the symbol as it is stored in the object file.
+    """
     name_demangled: str
-    """Demangled name of the symbol."""
+    """
+    Demangled name of the symbol.
+
+    Warning: It is possible that two symbols have same demangled name. For example:
+    `_ZN3act7current10controller8FFPIAFC2D2Ev` are `_ZN3act7current10controller8FFPIAFC2D1Ev`
+    both translate into `act::current::controller::FFPIAFC2::~FFPIAFC2()`.
+    """
     addr: int
     size: int
     type: str  # STT_FUNC, STT_OBJECT, STT_NOTYPE, STT_SECTION, STT_FILE
@@ -126,7 +134,7 @@ class Elf:
         elf_path: pathlib.PosixPath,
         objdump: str = "objdump",
     ) -> None:
-        """Lazily construct Elf."""
+        """Lazily construct an Elf object."""
         self._logger = logging.getLogger(self.__class__.__name__)
         self.elf_path = elf_path
         self.objdump = objdump
@@ -143,18 +151,19 @@ class Elf:
 
         Zero-size symbols will be ignored.
         """
+        logger = self._logger
         assert elf_path.exists() and elf_path.is_file()
 
-        symbols_list: list[ElfSymbol] = []
+        esymbols_list: list[ElfSymbol] = []
         sections_map: dict[int, ElfSection] = {}
 
-        self._logger.info("Analyzing '%s'", elf_path)
+        logger.info("Analyzing '%s'", elf_path)
         with open(elf_path, "rb") as file:
-            elf = elftools.elf.elffile.ELFFile(file)
+            elf_file = elftools.elf.elffile.ELFFile(file)
 
-            self._logger.debug("%d sections", elf.num_sections())
-            for section_idx in range(elf.num_sections()):
-                section = elf.get_section(section_idx)
+            logger.debug("%d sections", elf_file.num_sections())
+            for section_idx in range(elf_file.num_sections()):
+                section = elf_file.get_section(section_idx)
                 sections_map[section_idx] = ElfSection(
                     name=section.name,
                     idx=section_idx,
@@ -163,40 +172,84 @@ class Elf:
                     type=section["sh_type"],
                 )
 
+            zero_size_symbols_cnt = 0
             for section_idx in sections_map:
-                section = elf.get_section(section_idx)
-                if section["sh_type"] == "SHT_SYMTAB":
-                    assert hasattr(section, "num_symbols")
-                    assert hasattr(section, "iter_symbols")
-                    self._logger.info("%d symbols total", section.num_symbols())  # pyright: ignore
-                    for symbol in section.iter_symbols():  # pyright: ignore
-                        if symbol["st_size"]:
-                            st_value = symbol["st_value"]
-                            st_info = symbol["st_info"]
-                            symbols_list.append(
-                                ElfSymbol(
-                                    name=symbol.name,
-                                    name_demangled=demangle(symbol.name),
-                                    addr=st_value,
-                                    size=symbol["st_size"],
-                                    type=st_info["type"],
-                                    bind=st_info["bind"],
-                                    section=sections_map[symbol["st_shndx"]],
+                section = elf_file.get_section(section_idx)
+                if section["sh_type"] != "SHT_SYMTAB":
+                    continue
+                assert hasattr(section, "num_symbols")
+                assert hasattr(section, "iter_symbols")
+                logger.info("%d symbols total", section.num_symbols())  # pyright: ignore
+                for symbol in section.iter_symbols():  # pyright: ignore
+                    if symbol["st_size"]:
+                        st_value = symbol["st_value"]
+                        st_info = symbol["st_info"]
+                        esymbol_new = ElfSymbol(
+                            name=symbol.name,
+                            name_demangled=demangle(symbol.name),
+                            addr=st_value,
+                            size=symbol["st_size"],
+                            type=st_info["type"],
+                            bind=st_info["bind"],
+                            section=sections_map[symbol["st_shndx"]],
+                        )
+                        for s in esymbols_list:
+                            if s.name == esymbol_new.name:
+                                logger.warning(
+                                    "`%s` is already in the list; `%s`.", s.name, esymbol_new.name
                                 )
+                                break
+                        else:
+                            esymbols_list.append(esymbol_new)
+                    else:
+                        zero_size_symbols_cnt += 1
+
+            # Look into duplicate symbols
+            symbols_counter = Counter()
+            for s in esymbols_list:
+                symbols_counter.update([s.name])
+            for s in symbols_counter:
+                if symbols_counter[s] > 1:
+                    logger.warning("`%s` is %dx", s, symbols_counter[s])
+                    for s1 in esymbols_list:
+                        if s1.name == s:
+                            logger.info(
+                                "\t%s: addr: %d, size: %d", s1.name_demangled, s1.addr, s1.size
                             )
-        self._logger.info("%d symbols will be returned", len(symbols_list))
+
+            logger.info("ELF has DWARF info: %s", elf_file.has_dwarf_info())
+            # if elf_file.has_dwarf_info():
+            # dwarfinfo = elf_file.get_dwarf_info()
+
+            # This is the most reliable method. You scan the DWARF tags inside each CU to find
+            # their memory addresses (using DW_AT_low_pc or DW_AT_location), and then see which
+            # ELF symbol shares that same address.
+            # for cu in dwarfinfo.iter_CUs():
+            #     cu_name = cu.get_top_DIE().attributes.get('DW_AT_name').value.decode('utf-8')
+            #     logger.info(f"compilation Unit: {cu_name}")
+
+            # for die in cu.iter_DIEs():
+            #     if die.tag in ('DW_TAG_subprogram', 'DW_TAG_variable') \
+            # and 'DW_AT_low_pc' in die.attributes:
+            #         addr = die.attributes['DW_AT_low_pc'].value
+            #         logger.info(f"\t{addr}")
+            # if addr in addr_to_symbols:
+            #     print(f"  -> [{hex(addr)}] {addr_to_symbols[addr]}")
+
+        logger.info("%d zero-size were skipped", zero_size_symbols_cnt)
+        logger.info("%d symbols will be returned", len(esymbols_list))
 
         type_counter: Counter = Counter()
-        for symbol in symbols_list:
+        for symbol in esymbols_list:
             type_counter.update([symbol.type])
-        self._logger.info("object types: %s", type_counter)
+        logger.info("object types: %s", type_counter)
 
         bind_counter: Counter = Counter()
-        for symbol in symbols_list:
+        for symbol in esymbols_list:
             bind_counter.update([symbol.bind])
-        self._logger.info("object binds: %s", bind_counter)
+        logger.info("object binds: %s", bind_counter)
 
-        return symbols_list
+        return esymbols_list
 
     def get_symbols(
         self,
@@ -211,21 +264,20 @@ class Elf:
     def _get_disassembly(
         self,
         elf_path: pathlib.PosixPath,
-        objdump: str = "objdump",
     ) -> tuple[list[ElfInstruction], list[ElfSymbolDisassembly]]:
-        self._logger.info("Disassembling '%s' with '%s'", elf_path, objdump)
+        self._logger.info("Disassembling '%s' with '%s'", elf_path, self.objdump)
         instructions = []
         symbols_disassembly = []
 
         def disassemble() -> list[str]:
             with sp.Popen(
-                args=[objdump, "--disassemble", "--wide", str(elf_path)],
+                args=[self.objdump, "--disassemble", "--wide", str(elf_path)],
                 stdout=sp.PIPE,
                 stderr=sp.PIPE,
             ) as proc:
                 out, _ = proc.communicate()
                 assert proc.wait() == 0
-            self._logger.info("'%s' ok", objdump)
+            self._logger.info("'%s' ok", self.objdump)
             return out.decode(encoding="ascii").splitlines()
 
         # Example of a line:
@@ -295,7 +347,7 @@ class Elf:
         """Return a list of all disassembly lines."""
         if self.instructions is None:
             self.instructions, self.symbols_disassembly = self._get_disassembly(
-                elf_path=self.elf_path, objdump=self.objdump
+                elf_path=self.elf_path
             )
         return self.instructions
 
@@ -305,7 +357,7 @@ class Elf:
         """Return a list of all symbols' disassembly."""
         if self.symbols_disassembly is None:
             self.instructions, self.symbols_disassembly = self._get_disassembly(
-                elf_path=self.elf_path, objdump=self.objdump
+                elf_path=self.elf_path
             )
         return self.symbols_disassembly
 

@@ -7,3 +7,4 @@ from .elf import ElfSymbolDisassembly
 from .elf import ElfSymbolName
 from .elf import ElfSymbolNameDemangled
 from .report import report_elf_symbols
+from .report import report_elf_symbols_compare

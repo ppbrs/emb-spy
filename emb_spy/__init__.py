@@ -3,7 +3,6 @@ Expose emb-spy public classes and functions.
 """
 
 from .__about__ import __version__
-
 from .app_swo import AppSwo
 
 # Backend
@@ -11,28 +10,26 @@ from .backend import Backend
 
 # elf:
 from .elf.demangle import demangle
-from .elf.elf import Elf
-from .elf.elf import ElfInstruction
-from .elf.elf import ElfSymbol
-from .elf.elf import ElfSymbolDisassembly
-from .elf.elf import ElfSymbolName
-from .elf.elf import ElfSymbolNameDemangled
-from .elf.report import report_elf_symbols
+from .elf.elf import (
+    Elf,
+    ElfInstruction,
+    ElfSymbol,
+    ElfSymbolDisassembly,
+    ElfSymbolName,
+    ElfSymbolNameDemangled,
+)
+from .elf.report import report_elf_symbols, report_elf_symbols_compare
 
 #
 from .pc_sampler import PCSampler
+from .reader._reader_common import ReaderConfig, SymbolName
 
 # reader:
-from .reader._reader_core_reg import ReaderConfigCoreReg
-from .reader._reader_core_reg import ReaderConfigCoreRegBits
+from .reader._reader_core_reg import ReaderConfigCoreReg, ReaderConfigCoreRegBits
 from .reader._reader_memory import ReaderConfigMemory
-from .reader._reader_mmap_reg import ReaderConfigMmapReg
-from .reader._reader_mmap_reg import ReaderConfigMmapRegBits
+from .reader._reader_mmap_reg import ReaderConfigMmapReg, ReaderConfigMmapRegBits
 from .reader._reader_symbol import ReaderConfigSymbol
-from .reader.reader_static import ReaderStatic
-from .reader.reader_static import ReaderStaticResult
-from .reader._reader_common import ReaderConfig
-from .reader._reader_common import SymbolName
+from .reader.reader_static import ReaderStatic, ReaderStaticResult
 
 # socs
 from .socs.arm.armv6_m.stm32f0.stm32f051 import STM32F051
@@ -75,5 +72,6 @@ __all__ = [
     "ElfSymbolName",
     "ElfSymbolNameDemangled",
     "report_elf_symbols",
+    "report_elf_symbols_compare",
     "SoC",
 ]
