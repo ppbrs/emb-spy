@@ -271,15 +271,6 @@ def get_bits_config(
             "RCC_PLLCKSELR",
         ]
     )
-    mmap_reg_names.extend(
-        [
-            "SCB_CCR",
-            "CLIDR",
-            "CTR",
-            "CCSIDR",
-            "CSSELR",
-        ]
-    )
 
     mmap_reg_names.extend(
         [
@@ -288,6 +279,29 @@ def get_bits_config(
     )
 
     mmap_reg_names.extend(["PWR_CR3"])
+
+    for dma in [1, 2]:
+        for stream in range(8):
+            mmap_reg_names.append(f"DMA{dma}_S{stream}CR")
+            mmap_reg_names.append(f"DMA{dma}_S{stream}NDTR")
+            mmap_reg_names.append(f"DMA{dma}_S{stream}PAR")
+            mmap_reg_names.append(f"DMA{dma}_S{stream}M0AR")
+            mmap_reg_names.append(f"DMA{dma}_S{stream}M1AR")
+            mmap_reg_names.append(f"DMA{dma}_S{stream}FCR")
+
+    # Core peripherals
+    mmap_reg_names.extend(["FPCCR", "FPCAR", "FPDSCR"])
+
+    mmap_reg_names.extend(
+        [
+            "SCB_CCR",
+            "SCB_CPACR",
+            "CLIDR",
+            "CTR",
+            "CCSIDR",
+            "CSSELR",
+        ]
+    )
 
     # Core
     config.extend([ReaderConfigCoreReg(f"R{i}") for i in range(13)])
@@ -300,15 +314,6 @@ def get_bits_config(
     config.append(ReaderConfigCoreReg("PSP"))
     config.append(ReaderConfigCoreReg("MSP"))
     core_reg_names.extend(["CONTROL", "PSR"])
-
-    for dma in [1, 2]:
-        for stream in range(8):
-            mmap_reg_names.append(f"DMA{dma}_S{stream}CR")
-            mmap_reg_names.append(f"DMA{dma}_S{stream}NDTR")
-            mmap_reg_names.append(f"DMA{dma}_S{stream}PAR")
-            mmap_reg_names.append(f"DMA{dma}_S{stream}M0AR")
-            mmap_reg_names.append(f"DMA{dma}_S{stream}M1AR")
-            mmap_reg_names.append(f"DMA{dma}_S{stream}FCR")
 
     soc = STM32H743()
     map_name = soc.map_name()

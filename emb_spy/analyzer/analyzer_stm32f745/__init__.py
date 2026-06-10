@@ -33,9 +33,17 @@ class AnalyzerSTM32F745(Analyzer):
 
     def run(
         self,
+        *,
+        restart_if_not_running: bool,
+        halt_if_running: bool,
     ) -> None:
         """Run the analyzer."""
-        bits_data = self.read_bits(soc=STM32F745(), config=_get_bits_config(self))
+        bits_data = self.read_bits(
+            soc=STM32F745(),
+            config=_get_bits_config(self),
+            restart_if_not_running=restart_if_not_running,
+            halt_if_running=halt_if_running,
+        )
         md_file = MdUtils(file_name=str(self.report_file_path), title="STM32F745 Analyzer Report")
         self._report(bits_data=bits_data, md_file=md_file)
         md_file.create_md_file()

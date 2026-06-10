@@ -33,9 +33,19 @@ class AnalyzerSTM32F051(Analyzer):
         super().__init__(board_cfg=board_cfg, report_file_path=report_file_path, server=server)
         self.state = StateSTM32F051()
 
-    def run(self) -> None:
+    def run(
+        self,
+        *,
+        restart_if_not_running: bool,
+        halt_if_running: bool,
+    ) -> None:
         """Run the analyzer."""
-        bits_data = self.read_bits(soc=STM32F051(), config=_get_bits_config(self))
+        bits_data = self.read_bits(
+            soc=STM32F051(),
+            config=_get_bits_config(self),
+            restart_if_not_running=restart_if_not_running,
+            halt_if_running=halt_if_running,
+        )
         md_file = MdUtils(file_name=str(self.report_file_path), title="STM32F051 Analyzer Report")
         self._report(bits_data=bits_data, md_file=md_file)
         md_file.create_md_file()

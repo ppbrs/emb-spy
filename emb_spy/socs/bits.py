@@ -37,13 +37,14 @@ class Bits:
             bits, starting from the least significant bit.
             A generator, e.g. range(8, 16), can be used to create a list.
         """
-        self.bits = self._bits_checked(bits)
 
         if not isinstance(name, str):
             raise TypeError("Name must be a string.")
         if len(name) == 0:
             raise ValueError("Name cannot be blank.")
         self.name = name
+
+        self.bits = self._bits_checked(bits)
 
         if descr is not None and not isinstance(descr, str):
             raise TypeError("Description must be a string.")
@@ -59,9 +60,12 @@ class Bits:
                 raise TypeError("Values description must be a mapping from int to str.")
         self.descr_vals = descr_vals
 
-    @staticmethod
-    def _bits_checked(bits: int | Iterable[int]) -> list[int]:
-        """Check bits argument and return the correct type for the constructor."""
+    def _bits_checked(self, bits: int | Iterable[int]) -> list[int]:
+        """
+        Check bits argument and return the correct type for the constructor.
+
+        This method can be called only after 'name' attribute has been populated.
+        """
         if isinstance(bits, int):
             if bits > 31:
                 raise ValueError("Ony 32-bit registers are supported.")
@@ -72,13 +76,13 @@ class Bits:
             ]
         if isinstance(bits, Iterable):
             if len(list(bits)) == 0:
-                raise ValueError("At least one bit is required.")
+                raise ValueError(f"{self.name}: At least one bit is required: {bits=}")
             if not all(isinstance(i, int) for i in bits):
-                raise TypeError("An iterable of integers is required.")
+                raise TypeError(f"{self.name}: An iterable of integers is required: {bits=}")
             if any(i < 0 for i in bits):
-                raise ValueError("Bit index cannot be negative.")
+                raise ValueError(f"{self.name}: Bit index cannot be negative: {bits=}")
             if any(i > 31 for i in bits):
-                raise ValueError("Ony 32-bit registers are supported.")
+                raise ValueError(f"{self.name}: Ony 32-bit registers are supported: {bits=}")
             return sorted(bits)
         raise TypeError(f"Unsupported type of `bits`: {type(bits)}")
 

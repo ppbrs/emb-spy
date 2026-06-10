@@ -137,11 +137,36 @@ def report_core_armv7e_m(
     report_apsr_epsr()
 
     md_file.new_line("***")
+    md_file.new_header(level=2, title="Cache")
 
     icache_ena = bits_data["SCB_CCR.IC"].val
     dcache_ena = bits_data["SCB_CCR.DC"].val
     md_file.new_line("* I-Cache " + ("enabled" if icache_ena else "disabled"))
     md_file.new_line("* D-Cache " + ("enabled" if dcache_ena else "disabled"))
+
+    md_file.new_line("***")
+    md_file.new_header(level=2, title="FPU")
+
+    cp10 = bits_data["SCB_CPACR.CP10"].val
+    cp11 = bits_data["SCB_CPACR.CP11"].val
+    md_file.new_line(f"* CP10={cp10}, CP11={cp11}")
+
+    addr = bits_data["FPCAR.ADDRESS"].val
+    md_file.new_line(f"* Context Address: 0x{addr:08x}")
+
+    ahp = bits_data["FPDSCR.AHP"].val
+    dn = bits_data["FPDSCR.DN"].val
+    fz = bits_data["FPDSCR.FZ"].val
+    rmode = bits_data["FPDSCR.RMode"].val
+    md_file.new_line("* Floating-point Default Status Control Register")
+    md_file.new_line(f"\t* {ahp=}")
+    md_file.new_line(f"\t* {dn=}")
+    md_file.new_line(f"\t* {fz=}")
+    md_file.new_line(f"\t* {rmode=}")
+
+
+
+
 
     md_file.new_line("***")
 

@@ -3,6 +3,7 @@ Utilities to prepare reports on analyzed ELF files.
 """
 
 import dataclasses
+import datetime
 import logging
 import pathlib
 from collections.abc import Iterable
@@ -24,6 +25,8 @@ def report_elf_symbols(
 
     md_file = MdUtils(file_name=str(out_file_path), title="Symbols Report")
 
+    timestamp = datetime.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+    md_file.new_line(f"Report created {timestamp}.")
     md_file.new_line(f"**ELF**: {elf.elf_path}")
 
     md_file.new_line("***")
@@ -89,6 +92,8 @@ def report_elf_symbols_compare(
 
     md_file = MdUtils(file_name=str(out_file_path), title="Symbols compare report")
 
+    timestamp = datetime.datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S")
+    md_file.new_line(f"Report created {timestamp}.")
     md_file.new_line(f"**ELF A**: {elf_a.elf_path}")
     md_file.new_line(f"**ELF B**: {elf_b.elf_path}")
     md_file.new_line("***")
@@ -124,7 +129,7 @@ def report_elf_symbols_compare(
 
         md_file.new_line(f"# {s_type}")
 
-        table_legend = ["A size", "B size", "Demangled name"]
+        table_legend = ["A size", "B size", "Demangled symbol name"]
         table_values = []
 
         for ns in ns_list:

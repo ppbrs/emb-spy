@@ -27,7 +27,7 @@ _ = ConfigType
 
 @dataclasses.dataclass
 class State:
-    """Common parent for all State{SoC} classes."""
+    """Common parent to all State{SoC} classes."""
 
     target_name: str | None = None
     target_state: str | None = None
@@ -36,12 +36,15 @@ class State:
 
 # pylint: disable-next=too-few-public-methods
 class Analyzer(abc.ABC):
-    """Common functions to all analyzers."""
+    """Common parent to all Analyzer{SoC} classes."""
 
-    __slots__ = ("state", "report_file_path", "board_cfg")
+    __slots__ = ("server", "state", "report_file_path", "board_cfg")
 
+    server: tuple[str, int]
+    """Host name and port number."""
     state: State
     report_file_path: pathlib.PosixPath
+    """Markdown-formatted report file."""
     board_cfg: Analyzer.BoardConfig
 
     def __init__(
@@ -58,6 +61,16 @@ class Analyzer(abc.ABC):
         self.server = (
             ("localhost", Backend.find_openocd_telnet_port()) if server is None else server
         )
+
+    @abc.abstractmethod
+    def run(
+        self,
+        *,
+        restart_if_not_running: bool,
+        halt_if_running: bool,
+    ) -> None:
+        """Run the analyzer."""
+        raise NotImplementedError
 
     @dataclasses.dataclass
     class BoardConfig:
