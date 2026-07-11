@@ -6,7 +6,12 @@ from emb_spy.socs.soc import SoC
 
 
 def init_gpio(self: SoC, prefix: str, base: int) -> None:
-    """Generate all Register objects for GPIO."""
+    """
+    Generate all Register objects for GPIO.
+
+    :param prefix: E.g. 'GPIOA'.
+    :param base: E.g.0x58020000 for GPIOA on STM32F743.
+    """
     moder_descr_vals = {
         0: "Input mode",
         1: "General purpose output mode",
